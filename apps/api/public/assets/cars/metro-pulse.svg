@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-labelledby="title">
+  <title id="title">Metro Pulse dummy hatchback image</title>
+  <rect width="1200" height="800" fill="#1e1b4b"/>
+  <rect x="155" y="480" width="890" height="90" rx="44" fill="#4f46e5"/>
+  <path d="M306 470h585l-72-118H401z" fill="#e0e7ff"/>
+  <path d="M420 374h160v80H342zM610 374h190l49 80H610z" fill="#a5b4fc"/>
+  <circle cx="370" cy="580" r="66" fill="#111827"/>
+  <circle cx="370" cy="580" r="30" fill="#c7d2fe"/>
+  <circle cx="800" cy="580" r="66" fill="#111827"/>
+  <circle cx="800" cy="580" r="30" fill="#c7d2fe"/>
+  <text x="600" y="185" text-anchor="middle" fill="#eef2ff" font-family="Arial, sans-serif" font-size="54" font-weight="700">Metro Pulse</text>
+</svg>

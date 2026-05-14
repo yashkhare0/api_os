@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-labelledby="title">
+  <title id="title">Malibu canyon studio dummy stay image</title>
+  <rect width="1200" height="800" fill="#082f49"/>
+  <path d="M0 610 290 390l230 155 240-260 440 325v190H0z" fill="#0c4a6e"/>
+  <rect x="430" y="395" width="340" height="220" rx="16" fill="#e0f2fe"/>
+  <rect x="500" y="455" width="90" height="110" fill="#0284c7"/>
+  <rect x="625" y="455" width="90" height="70" fill="#7dd3fc"/>
+  <text x="600" y="140" text-anchor="middle" fill="#f0f9ff" font-family="Arial, sans-serif" font-size="52" font-weight="700">Canyon View Studio</text>
+</svg>

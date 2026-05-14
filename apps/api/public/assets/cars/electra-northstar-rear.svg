@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">electra northstar rear</title>
+  <desc id="desc">Generated catalog illustration for a fictional vehicle listing.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff8e8"/>
+      <stop offset="1" stop-color="#ffffff"/>
+    </linearGradient>
+    <linearGradient id="paint" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#31572c"/>
+      <stop offset="1" stop-color="#31572c"/>
+    </linearGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="28" stdDeviation="26" flood-color="#1f2937" flood-opacity="0.22"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#bg)"/>
+  <rect x="112" y="112" width="1376" height="776" rx="44" fill="#ffffff" opacity="0.72"/>
+  <path d="M126 720 C356 660 588 638 842 650 C1100 662 1292 686 1478 742" fill="none" stroke="#cbd5e1" stroke-width="8" opacity="0.8"/>
+  <g filter="url(#soft)">
+    <path d="M306 584 C376 486 500 420 680 400 L900 400 C1038 402 1164 468 1264 572 L1354 590 C1398 598 1430 634 1430 680 L1430 712 C1430 738 1408 760 1382 760 L292 760 C266 760 244 738 244 712 L244 680 C244 632 260 598 306 584 Z" fill="url(#paint)"/>
+    <path d="M514 420 L695 420 L648 554 L382 554 C412 494 454 452 514 420 Z" fill="#dbeafe" opacity="0.86"/>
+    <path d="M732 420 L888 420 C982 422 1064 466 1136 552 L692 552 L732 420 Z" fill="#bfdbfe" opacity="0.82"/>
+    <path d="M318 592 L210 628 L236 672 L340 660 Z" fill="#f8fafc" opacity="0.88"/>
+    <path d="M1280 596 L1436 638 L1408 680 L1268 658 Z" fill="#fee2e2" opacity="0.9"/>
+    <circle cx="466" cy="760" r="94" fill="#111827"/>
+    <circle cx="466" cy="760" r="46" fill="#e5e7eb"/>
+    <circle cx="1174" cy="760" r="94" fill="#111827"/>
+    <circle cx="1174" cy="760" r="46" fill="#e5e7eb"/>
+  </g>
+  <g fill="#111827">
+    <text x="130" y="170" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="700">electra northstar rear</text>
+    <text x="130" y="222" font-family="Inter, Arial, sans-serif" font-size="26" opacity="0.65">Rear three-quarter - fictional catalog media</text>
+  </g>
+  <g opacity="0.5" fill="none" stroke="#64748b" stroke-width="3">
+    <path d="M1210 170 h168"/>
+    <path d="M1210 205 h118"/>
+    <path d="M1210 240 h148"/>
+  </g>
+</svg>

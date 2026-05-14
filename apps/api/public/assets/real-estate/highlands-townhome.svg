@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-labelledby="title">
+  <title id="title">Highlands townhome dummy property image</title>
+  <rect width="1200" height="800" fill="#164e63"/>
+  <rect x="210" y="330" width="780" height="325" fill="#cffafe"/>
+  <path d="M190 330h820L850 205H350z" fill="#0e7490"/>
+  <rect x="330" y="420" width="130" height="110" fill="#67e8f9"/>
+  <rect x="535" y="455" width="125" height="200" fill="#155e75"/>
+  <rect x="735" y="420" width="130" height="110" fill="#67e8f9"/>
+  <text x="600" y="135" text-anchor="middle" fill="#ecfeff" font-family="Arial, sans-serif" font-size="52" font-weight="700">Highlands Townhome</text>
+</svg>

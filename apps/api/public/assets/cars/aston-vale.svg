@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-labelledby="title">
+  <title id="title">Aston Vale LX dummy vehicle image</title>
+  <rect width="1200" height="800" fill="#111827"/>
+  <rect x="110" y="470" width="980" height="95" rx="48" fill="#1f2937"/>
+  <path d="M250 455h700l-86-135H386z" fill="#d1d5db"/>
+  <path d="M408 342h185v98H326zM630 342h215l62 98H630z" fill="#60a5fa" opacity=".85"/>
+  <circle cx="365" cy="575" r="74" fill="#030712"/>
+  <circle cx="365" cy="575" r="36" fill="#9ca3af"/>
+  <circle cx="835" cy="575" r="74" fill="#030712"/>
+  <circle cx="835" cy="575" r="36" fill="#9ca3af"/>
+  <text x="600" y="180" text-anchor="middle" fill="#f9fafb" font-family="Arial, sans-serif" font-size="54" font-weight="700">Aston Vale LX</text>
+</svg>

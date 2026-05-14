@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-labelledby="title">
+  <title id="title">Sedona casita dummy stay image</title>
+  <rect width="1200" height="800" fill="#431407"/>
+  <path d="M0 620 160 360l150 180 160-260 180 260 180-210 370 290v180H0z" fill="#9a3412"/>
+  <rect x="360" y="410" width="480" height="210" rx="18" fill="#fed7aa"/>
+  <rect x="555" y="500" width="95" height="120" fill="#7c2d12"/>
+  <text x="600" y="140" text-anchor="middle" fill="#fff7ed" font-family="Arial, sans-serif" font-size="52" font-weight="700">Red Rock Casita</text>
+</svg>

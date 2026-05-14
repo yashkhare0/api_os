@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-labelledby="title">
+  <title id="title">West Loop brick loft dummy property image</title>
+  <rect width="1200" height="800" fill="#3f1d14"/>
+  <rect x="260" y="180" width="680" height="500" fill="#b45309"/>
+  <g fill="#fed7aa">
+    <rect x="330" y="250" width="110" height="110"/>
+    <rect x="545" y="250" width="110" height="110"/>
+    <rect x="760" y="250" width="110" height="110"/>
+    <rect x="330" y="430" width="110" height="110"/>
+    <rect x="545" y="430" width="110" height="110"/>
+    <rect x="760" y="430" width="110" height="110"/>
+  </g>
+  <text x="600" y="110" text-anchor="middle" fill="#ffedd5" font-family="Arial, sans-serif" font-size="52" font-weight="700">West Loop Loft</text>
+</svg>

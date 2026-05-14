@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-labelledby="title">
+  <title id="title">Zilker modern bungalow dummy property image</title>
+  <rect width="1200" height="800" fill="#172554"/>
+  <rect x="170" y="440" width="860" height="210" fill="#dbeafe"/>
+  <path d="M120 442 600 180l480 262z" fill="#1d4ed8"/>
+  <rect x="515" y="505" width="130" height="145" fill="#1e3a8a"/>
+  <rect x="250" y="500" width="135" height="82" fill="#93c5fd"/>
+  <rect x="760" y="500" width="150" height="82" fill="#93c5fd"/>
+  <text x="600" y="120" text-anchor="middle" fill="#eff6ff" font-family="Arial, sans-serif" font-size="52" font-weight="700">Zilker Bungalow</text>
+</svg>

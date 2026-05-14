@@ -1,0 +1,41 @@
+{
+  "name": "@dummy-api/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "exports": {
+    "./app": {
+      "types": "./src/app.ts",
+      "default": "./src/app.ts"
+    },
+    "./config": {
+      "types": "./src/lib/config.ts",
+      "default": "./src/lib/config.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "dev": "node ../../scripts/with-env.mjs tsx watch src/index.ts",
+    "lint": "eslint src --ext .ts",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@dummy-api/catalog": "workspace:*",
+    "@dummy-api/contracts": "workspace:*",
+    "@dummy-api/core": "workspace:*",
+    "@fastify/cors": "^11.1.0",
+    "@fastify/helmet": "^13.0.2",
+    "@fastify/rate-limit": "^10.3.0",
+    "@fastify/static": "^8.3.0",
+    "fastify": "^5.6.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.13"
+  }
+}

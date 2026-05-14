@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-labelledby="title">
+  <title id="title">Catskills A-frame dummy stay image</title>
+  <rect width="1200" height="800" fill="#052e16"/>
+  <path d="M150 660 600 170l450 490z" fill="#bbf7d0"/>
+  <path d="M310 660 600 310l290 350z" fill="#166534"/>
+  <rect x="540" y="525" width="115" height="135" fill="#052e16"/>
+  <text x="600" y="110" text-anchor="middle" fill="#f0fdf4" font-family="Arial, sans-serif" font-size="52" font-weight="700">Woodland A-frame</text>
+</svg>
