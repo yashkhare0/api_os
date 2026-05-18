@@ -12,14 +12,24 @@ export async function registerRealEstateRoutes(app: FastifyInstance, context: Ve
   app.get("/v1/real-estate/properties", { schema: { querystring: realEstatePropertiesQuerySchema } }, async (request) => {
     const query = request.query as Record<string, unknown>;
     const city = asString(query.city)?.toLowerCase();
+    const propertyType = asString(query.propertyType);
     const minPrice = asNumber(query.minPrice);
     const maxPrice = asNumber(query.maxPrice);
+    const minBedrooms = asNumber(query.minBedrooms);
+    const minBathrooms = asNumber(query.minBathrooms);
     const limit = clampLimit(query.limit);
+
+    if (minPrice !== undefined && maxPrice !== undefined && minPrice > maxPrice) {
+      throw badRequest("minPrice cannot exceed maxPrice.");
+    }
 
     const filtered = propertyListings
       .filter((listing) => !city || listing.city.toLowerCase() === city)
+      .filter((listing) => !propertyType || listing.propertyType === propertyType)
       .filter((listing) => minPrice === undefined || listing.price >= minPrice)
       .filter((listing) => maxPrice === undefined || listing.price <= maxPrice)
+      .filter((listing) => minBedrooms === undefined || listing.bedrooms >= minBedrooms)
+      .filter((listing) => minBathrooms === undefined || listing.bathrooms >= minBathrooms)
       .slice(0, limit)
       .map((listing) => serializeProperty(listing, context));
 
@@ -51,12 +61,18 @@ export async function registerRealEstateRoutes(app: FastifyInstance, context: Ve
       throw badRequest("propertyId does not match an available property.");
     }
 
+    const startDate = parseIsoDate(body.startDate, "startDate");
+    const endDate = parseIsoDate(body.endDate, "endDate");
+    if (Date.parse(startDate) >= Date.parse(endDate)) {
+      throw badRequest("endDate must be after startDate.");
+    }
+
     const booking = await context.store.createBooking({
       verticalSlug: "real-estate",
       apiKeyId: authRequest.auth.apiKeyId,
       itemId: property.id,
-      startDate: parseIsoDate(body.startDate, "startDate"),
-      endDate: parseIsoDate(body.endDate, "endDate"),
+      startDate,
+      endDate,
       ...(body.guestName ? { guestName: body.guestName } : {}),
       total: 0
     });

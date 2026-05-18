@@ -76,8 +76,8 @@ export const products: Product[] = [
     reviewCount: 186,
     colors: ["sage", "ivory", "navy"],
     tags: ["linen", "layering", "spring"],
-    heroImage: "/assets/ecommerce/linen-overshirt-hero.svg",
-    gallery: ["/assets/ecommerce/linen-overshirt-detail.svg", "/assets/ecommerce/linen-overshirt-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/apparel.jpg",
+    gallery: ["/assets/ecommerce/apparel.jpg", "/assets/ecommerce/apparel.jpg"]
   },
   {
     id: "prod_merino_travel_tee_01",
@@ -92,8 +92,8 @@ export const products: Product[] = [
     reviewCount: 241,
     colors: ["charcoal", "heather gray", "sea blue"],
     tags: ["travel", "merino", "basics"],
-    heroImage: "/assets/ecommerce/merino-travel-tee-hero.svg",
-    gallery: ["/assets/ecommerce/merino-travel-tee-detail.svg", "/assets/ecommerce/merino-travel-tee-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/apparel.jpg",
+    gallery: ["/assets/ecommerce/apparel.jpg", "/assets/ecommerce/apparel.jpg"]
   },
   {
     id: "prod_canvas_chore_jacket_01",
@@ -109,8 +109,8 @@ export const products: Product[] = [
     reviewCount: 97,
     colors: ["clay", "moss", "black"],
     tags: ["outerwear", "canvas", "workwear"],
-    heroImage: "/assets/ecommerce/canvas-chore-jacket-hero.svg",
-    gallery: ["/assets/ecommerce/canvas-chore-jacket-detail.svg", "/assets/ecommerce/canvas-chore-jacket-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/apparel.jpg",
+    gallery: ["/assets/ecommerce/apparel.jpg", "/assets/ecommerce/apparel.jpg"]
   },
   {
     id: "prod_stretch_commuter_pant_01",
@@ -125,8 +125,8 @@ export const products: Product[] = [
     reviewCount: 132,
     colors: ["black", "olive", "stone"],
     tags: ["commute", "stretch", "travel"],
-    heroImage: "/assets/ecommerce/stretch-commuter-pant-hero.svg",
-    gallery: ["/assets/ecommerce/stretch-commuter-pant-detail.svg", "/assets/ecommerce/stretch-commuter-pant-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/apparel.jpg",
+    gallery: ["/assets/ecommerce/apparel.jpg", "/assets/ecommerce/apparel.jpg"]
   },
   {
     id: "prod_quilted_house_slipper_01",
@@ -141,8 +141,8 @@ export const products: Product[] = [
     reviewCount: 204,
     colors: ["oat", "graphite", "plum"],
     tags: ["loungewear", "fleece", "comfort"],
-    heroImage: "/assets/ecommerce/quilted-house-slipper-hero.svg",
-    gallery: ["/assets/ecommerce/quilted-house-slipper-detail.svg", "/assets/ecommerce/quilted-house-slipper-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/apparel.jpg",
+    gallery: ["/assets/ecommerce/apparel.jpg", "/assets/ecommerce/apparel.jpg"]
   },
   {
     id: "prod_ceramic_table_lamp_01",
@@ -157,8 +157,8 @@ export const products: Product[] = [
     reviewCount: 88,
     colors: ["cream", "terracotta"],
     tags: ["lighting", "ceramic", "bedroom"],
-    heroImage: "/assets/ecommerce/ceramic-table-lamp-hero.svg",
-    gallery: ["/assets/ecommerce/ceramic-table-lamp-detail.svg", "/assets/ecommerce/ceramic-table-lamp-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/home.jpg",
+    gallery: ["/assets/ecommerce/home.jpg", "/assets/ecommerce/home.jpg"]
   },
   {
     id: "prod_waffle_throw_blanket_01",
@@ -173,8 +173,8 @@ export const products: Product[] = [
     reviewCount: 173,
     colors: ["natural", "indigo", "rust"],
     tags: ["textiles", "cotton", "living room"],
-    heroImage: "/assets/ecommerce/waffle-throw-blanket-hero.svg",
-    gallery: ["/assets/ecommerce/waffle-throw-blanket-detail.svg", "/assets/ecommerce/waffle-throw-blanket-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/home.jpg",
+    gallery: ["/assets/ecommerce/home.jpg", "/assets/ecommerce/home.jpg"]
   },
   {
     id: "prod_stackable_dinnerware_01",
@@ -189,8 +189,8 @@ export const products: Product[] = [
     reviewCount: 119,
     colors: ["speckle white", "charcoal", "sage"],
     tags: ["kitchen", "stoneware", "tabletop"],
-    heroImage: "/assets/ecommerce/stackable-dinnerware-hero.svg",
-    gallery: ["/assets/ecommerce/stackable-dinnerware-detail.svg", "/assets/ecommerce/stackable-dinnerware-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/home.jpg",
+    gallery: ["/assets/ecommerce/home.jpg", "/assets/ecommerce/home.jpg"]
   },
   {
     id: "prod_modular_wall_shelf_01",
@@ -205,8 +205,8 @@ export const products: Product[] = [
     reviewCount: 73,
     colors: ["oak", "walnut", "black"],
     tags: ["storage", "wood", "entryway"],
-    heroImage: "/assets/ecommerce/modular-wall-shelf-hero.svg",
-    gallery: ["/assets/ecommerce/modular-wall-shelf-detail.svg", "/assets/ecommerce/modular-wall-shelf-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/home.jpg",
+    gallery: ["/assets/ecommerce/home.jpg", "/assets/ecommerce/home.jpg"]
   },
   {
     id: "prod_scented_soy_candle_01",
@@ -221,8 +221,8 @@ export const products: Product[] = [
     reviewCount: 314,
     colors: ["amber", "smoke", "white"],
     tags: ["candle", "gift", "fragrance"],
-    heroImage: "/assets/ecommerce/scented-soy-candle-hero.svg",
-    gallery: ["/assets/ecommerce/scented-soy-candle-detail.svg", "/assets/ecommerce/scented-soy-candle-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/home.jpg",
+    gallery: ["/assets/ecommerce/home.jpg", "/assets/ecommerce/home.jpg"]
   },
   {
     id: "prod_noise_canceling_earbuds_01",
@@ -238,8 +238,8 @@ export const products: Product[] = [
     reviewCount: 422,
     colors: ["matte black", "porcelain", "sage"],
     tags: ["audio", "wireless", "travel"],
-    heroImage: "/assets/ecommerce/noise-canceling-earbuds-hero.svg",
-    gallery: ["/assets/ecommerce/noise-canceling-earbuds-detail.svg", "/assets/ecommerce/noise-canceling-earbuds-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/electronics.jpg",
+    gallery: ["/assets/ecommerce/electronics.jpg", "/assets/ecommerce/electronics.jpg"]
   },
   {
     id: "prod_portable_mini_projector_01",
@@ -254,8 +254,8 @@ export const products: Product[] = [
     reviewCount: 66,
     colors: ["graphite"],
     tags: ["projector", "movie night", "portable"],
-    heroImage: "/assets/ecommerce/portable-mini-projector-hero.svg",
-    gallery: ["/assets/ecommerce/portable-mini-projector-detail.svg", "/assets/ecommerce/portable-mini-projector-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/electronics.jpg",
+    gallery: ["/assets/ecommerce/electronics.jpg", "/assets/ecommerce/electronics.jpg"]
   },
   {
     id: "prod_usb_c_desk_hub_01",
@@ -270,8 +270,8 @@ export const products: Product[] = [
     reviewCount: 155,
     colors: ["silver", "space gray"],
     tags: ["desk", "usb-c", "productivity"],
-    heroImage: "/assets/ecommerce/usb-c-desk-hub-hero.svg",
-    gallery: ["/assets/ecommerce/usb-c-desk-hub-detail.svg", "/assets/ecommerce/usb-c-desk-hub-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/electronics.jpg",
+    gallery: ["/assets/ecommerce/electronics.jpg", "/assets/ecommerce/electronics.jpg"]
   },
   {
     id: "prod_smart_alarm_clock_01",
@@ -286,8 +286,8 @@ export const products: Product[] = [
     reviewCount: 137,
     colors: ["white", "sand"],
     tags: ["sleep", "bedside", "speaker"],
-    heroImage: "/assets/ecommerce/smart-sunrise-alarm-hero.svg",
-    gallery: ["/assets/ecommerce/smart-sunrise-alarm-detail.svg", "/assets/ecommerce/smart-sunrise-alarm-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/electronics.jpg",
+    gallery: ["/assets/ecommerce/electronics.jpg", "/assets/ecommerce/electronics.jpg"]
   },
   {
     id: "prod_wireless_charging_tray_01",
@@ -302,8 +302,8 @@ export const products: Product[] = [
     reviewCount: 102,
     colors: ["black", "camel"],
     tags: ["charging", "entryway", "organization"],
-    heroImage: "/assets/ecommerce/wireless-charging-tray-hero.svg",
-    gallery: ["/assets/ecommerce/wireless-charging-tray-detail.svg", "/assets/ecommerce/wireless-charging-tray-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/electronics.jpg",
+    gallery: ["/assets/ecommerce/electronics.jpg", "/assets/ecommerce/electronics.jpg"]
   },
   {
     id: "prod_stainless_water_bottle_01",
@@ -318,8 +318,8 @@ export const products: Product[] = [
     reviewCount: 518,
     colors: ["pine", "clay", "ice"],
     tags: ["hydration", "stainless steel", "daily carry"],
-    heroImage: "/assets/ecommerce/insulated-water-bottle-hero.svg",
-    gallery: ["/assets/ecommerce/insulated-water-bottle-detail.svg", "/assets/ecommerce/insulated-water-bottle-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/wellness.jpg",
+    gallery: ["/assets/ecommerce/wellness.jpg", "/assets/ecommerce/wellness.jpg"]
   },
   {
     id: "prod_weighted_eye_mask_01",
@@ -334,8 +334,8 @@ export const products: Product[] = [
     reviewCount: 89,
     colors: ["midnight", "rose", "champagne"],
     tags: ["sleep", "silk", "travel"],
-    heroImage: "/assets/ecommerce/weighted-eye-mask-hero.svg",
-    gallery: ["/assets/ecommerce/weighted-eye-mask-detail.svg", "/assets/ecommerce/weighted-eye-mask-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/wellness.jpg",
+    gallery: ["/assets/ecommerce/wellness.jpg", "/assets/ecommerce/wellness.jpg"]
   },
   {
     id: "prod_recovery_foam_roller_01",
@@ -350,8 +350,8 @@ export const products: Product[] = [
     reviewCount: 113,
     colors: ["charcoal", "blue"],
     tags: ["fitness", "recovery", "mobility"],
-    heroImage: "/assets/ecommerce/textured-foam-roller-hero.svg",
-    gallery: ["/assets/ecommerce/textured-foam-roller-detail.svg", "/assets/ecommerce/textured-foam-roller-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/wellness.jpg",
+    gallery: ["/assets/ecommerce/wellness.jpg", "/assets/ecommerce/wellness.jpg"]
   },
   {
     id: "prod_mineral_sunscreen_01",
@@ -366,8 +366,8 @@ export const products: Product[] = [
     reviewCount: 263,
     colors: ["white"],
     tags: ["skincare", "spf", "travel size"],
-    heroImage: "/assets/ecommerce/mineral-sunscreen-hero.svg",
-    gallery: ["/assets/ecommerce/mineral-sunscreen-detail.svg", "/assets/ecommerce/mineral-sunscreen-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/wellness.jpg",
+    gallery: ["/assets/ecommerce/wellness.jpg", "/assets/ecommerce/wellness.jpg"]
   },
   {
     id: "prod_aromatherapy_diffuser_01",
@@ -382,8 +382,8 @@ export const products: Product[] = [
     reviewCount: 76,
     colors: ["stone", "sage"],
     tags: ["aromatherapy", "ceramic", "relaxation"],
-    heroImage: "/assets/ecommerce/aromatherapy-diffuser-hero.svg",
-    gallery: ["/assets/ecommerce/aromatherapy-diffuser-detail.svg", "/assets/ecommerce/aromatherapy-diffuser-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/wellness.jpg",
+    gallery: ["/assets/ecommerce/wellness.jpg", "/assets/ecommerce/wellness.jpg"]
   },
   {
     id: "prod_packable_rain_shell_01",
@@ -398,8 +398,8 @@ export const products: Product[] = [
     reviewCount: 164,
     colors: ["alpine blue", "black", "cypress"],
     tags: ["rainwear", "hiking", "packable"],
-    heroImage: "/assets/ecommerce/packable-rain-shell-hero.svg",
-    gallery: ["/assets/ecommerce/packable-rain-shell-detail.svg", "/assets/ecommerce/packable-rain-shell-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/outdoor.jpg",
+    gallery: ["/assets/ecommerce/outdoor.jpg", "/assets/ecommerce/outdoor.jpg"]
   },
   {
     id: "prod_trail_daypack_01",
@@ -414,8 +414,8 @@ export const products: Product[] = [
     reviewCount: 91,
     colors: ["forest", "slate", "ember"],
     tags: ["backpack", "hiking", "hydration"],
-    heroImage: "/assets/ecommerce/trail-daypack-hero.svg",
-    gallery: ["/assets/ecommerce/trail-daypack-detail.svg", "/assets/ecommerce/trail-daypack-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/outdoor.jpg",
+    gallery: ["/assets/ecommerce/outdoor.jpg", "/assets/ecommerce/outdoor.jpg"]
   },
   {
     id: "prod_enamel_picnic_set_01",
@@ -430,8 +430,8 @@ export const products: Product[] = [
     reviewCount: 57,
     colors: ["cream", "navy"],
     tags: ["camp", "picnic", "tableware"],
-    heroImage: "/assets/ecommerce/enamel-picnic-set-hero.svg",
-    gallery: ["/assets/ecommerce/enamel-picnic-set-detail.svg", "/assets/ecommerce/enamel-picnic-set-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/outdoor.jpg",
+    gallery: ["/assets/ecommerce/outdoor.jpg", "/assets/ecommerce/outdoor.jpg"]
   },
   {
     id: "prod_compact_camp_chair_01",
@@ -446,8 +446,8 @@ export const products: Product[] = [
     reviewCount: 138,
     colors: ["sand", "green", "black"],
     tags: ["camping", "chair", "portable"],
-    heroImage: "/assets/ecommerce/compact-camp-chair-hero.svg",
-    gallery: ["/assets/ecommerce/compact-camp-chair-detail.svg", "/assets/ecommerce/compact-camp-chair-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/outdoor.jpg",
+    gallery: ["/assets/ecommerce/outdoor.jpg", "/assets/ecommerce/outdoor.jpg"]
   },
   {
     id: "prod_thermal_travel_mug_01",
@@ -462,8 +462,8 @@ export const products: Product[] = [
     reviewCount: 295,
     colors: ["black", "canyon", "seafoam"],
     tags: ["coffee", "travel", "insulated"],
-    heroImage: "/assets/ecommerce/thermal-travel-mug-hero.svg",
-    gallery: ["/assets/ecommerce/thermal-travel-mug-detail.svg", "/assets/ecommerce/thermal-travel-mug-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/outdoor.jpg",
+    gallery: ["/assets/ecommerce/outdoor.jpg", "/assets/ecommerce/outdoor.jpg"]
   },
   {
     id: "prod_weekender_duffel_01",
@@ -478,8 +478,8 @@ export const products: Product[] = [
     reviewCount: 111,
     colors: ["olive", "tan", "black"],
     tags: ["travel", "duffel", "canvas"],
-    heroImage: "/assets/ecommerce/waxed-canvas-weekender-hero.svg",
-    gallery: ["/assets/ecommerce/waxed-canvas-weekender-detail.svg", "/assets/ecommerce/waxed-canvas-weekender-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/accessories.jpg",
+    gallery: ["/assets/ecommerce/accessories.jpg", "/assets/ecommerce/accessories.jpg"]
   },
   {
     id: "prod_tech_organizer_pouch_01",
@@ -494,8 +494,8 @@ export const products: Product[] = [
     reviewCount: 149,
     colors: ["charcoal", "cobalt", "moss"],
     tags: ["organization", "travel", "desk"],
-    heroImage: "/assets/ecommerce/tech-organizer-pouch-hero.svg",
-    gallery: ["/assets/ecommerce/tech-organizer-pouch-detail.svg", "/assets/ecommerce/tech-organizer-pouch-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/accessories.jpg",
+    gallery: ["/assets/ecommerce/accessories.jpg", "/assets/ecommerce/accessories.jpg"]
   },
   {
     id: "prod_leather_card_wallet_01",
@@ -510,8 +510,8 @@ export const products: Product[] = [
     reviewCount: 232,
     colors: ["cognac", "black", "forest"],
     tags: ["wallet", "leather", "everyday carry"],
-    heroImage: "/assets/ecommerce/slim-leather-card-wallet-hero.svg",
-    gallery: ["/assets/ecommerce/slim-leather-card-wallet-detail.svg", "/assets/ecommerce/slim-leather-card-wallet-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/accessories.jpg",
+    gallery: ["/assets/ecommerce/accessories.jpg", "/assets/ecommerce/accessories.jpg"]
   },
   {
     id: "prod_recycled_tote_01",
@@ -526,8 +526,8 @@ export const products: Product[] = [
     reviewCount: 84,
     colors: ["natural", "black", "coral"],
     tags: ["tote", "market", "recycled"],
-    heroImage: "/assets/ecommerce/recycled-market-tote-hero.svg",
-    gallery: ["/assets/ecommerce/recycled-market-tote-detail.svg", "/assets/ecommerce/recycled-market-tote-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/accessories.jpg",
+    gallery: ["/assets/ecommerce/accessories.jpg", "/assets/ecommerce/accessories.jpg"]
   },
   {
     id: "prod_travel_jewelry_case_01",
@@ -542,7 +542,7 @@ export const products: Product[] = [
     reviewCount: 68,
     colors: ["blush", "navy", "cream"],
     tags: ["travel", "jewelry", "gift"],
-    heroImage: "/assets/ecommerce/travel-jewelry-case-hero.svg",
-    gallery: ["/assets/ecommerce/travel-jewelry-case-detail.svg", "/assets/ecommerce/travel-jewelry-case-lifestyle.svg"]
+    heroImage: "/assets/ecommerce/accessories.jpg",
+    gallery: ["/assets/ecommerce/accessories.jpg", "/assets/ecommerce/accessories.jpg"]
   }
 ];

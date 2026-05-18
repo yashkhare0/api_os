@@ -1,0 +1,236 @@
+{
+  "httpSummary": [
+    {
+      "label": "auth.rejects.missing-key",
+      "method": "GET",
+      "path": "/v1/cars/listings",
+      "status": 401,
+      "code": "unauthorized"
+    },
+    {
+      "label": "cars.list.filtered",
+      "method": "GET",
+      "path": "/v1/cars/listings?make=Electra&bodyStyle=suv&fuelType=electric&maxMileage=500",
+      "status": 200,
+      "count": 1
+    },
+    {
+      "label": "cars.detail",
+      "method": "GET",
+      "path": "/v1/cars/listings/car_electra_suv_01",
+      "status": 200,
+      "dataId": "car_electra_suv_01"
+    },
+    {
+      "label": "cars.dealers.filtered",
+      "method": "GET",
+      "path": "/v1/cars/dealers?state=WA",
+      "status": 200,
+      "count": 1
+    },
+    {
+      "label": "cars.dealer.detail",
+      "method": "GET",
+      "path": "/v1/cars/dealers/dealer_seattle_greenline",
+      "status": 200,
+      "dataId": "dealer_seattle_greenline"
+    },
+    {
+      "label": "cars.cart.create",
+      "method": "POST",
+      "path": "/v1/cars/carts",
+      "status": 200,
+      "dataId": "jd7aebztv7jtvf3g96njxaj35n86wgpn"
+    },
+    {
+      "label": "cars.cart.add-item",
+      "method": "POST",
+      "path": "/v1/cars/carts/jd7aebztv7jtvf3g96njxaj35n86wgpn/items",
+      "status": 200,
+      "dataId": "jd7aebztv7jtvf3g96njxaj35n86wgpn"
+    },
+    {
+      "label": "cars.cart.detail",
+      "method": "GET",
+      "path": "/v1/cars/carts/jd7aebztv7jtvf3g96njxaj35n86wgpn",
+      "status": 200,
+      "dataId": "jd7aebztv7jtvf3g96njxaj35n86wgpn"
+    },
+    {
+      "label": "cars.checkout.create",
+      "method": "POST",
+      "path": "/v1/cars/checkouts",
+      "status": 200,
+      "dataId": "jh73cnzxxpgpynbnve0at33gr186wday",
+      "total": 61200
+    },
+    {
+      "label": "cars.financing.create",
+      "method": "POST",
+      "path": "/v1/cars/financing/prequalifications",
+      "status": 200,
+      "dataId": "k573mfek6bsq6rweqwazzketrd86xddd"
+    },
+    {
+      "label": "cars.financing.detail",
+      "method": "GET",
+      "path": "/v1/cars/financing/prequalifications/k573mfek6bsq6rweqwazzketrd86xddd",
+      "status": 200,
+      "dataId": "k573mfek6bsq6rweqwazzketrd86xddd"
+    },
+    {
+      "label": "ecommerce.categories",
+      "method": "GET",
+      "path": "/v1/ecommerce/categories",
+      "status": 200,
+      "count": 6
+    },
+    {
+      "label": "ecommerce.products.search",
+      "method": "GET",
+      "path": "/v1/ecommerce/products?category=electronics&q=wireless&limit=5",
+      "status": 200,
+      "count": 2
+    },
+    {
+      "label": "ecommerce.product.detail",
+      "method": "GET",
+      "path": "/v1/ecommerce/products/prod_noise_canceling_earbuds_01",
+      "status": 200,
+      "dataId": "prod_noise_canceling_earbuds_01"
+    },
+    {
+      "label": "ecommerce.cart.create",
+      "method": "POST",
+      "path": "/v1/ecommerce/carts",
+      "status": 200,
+      "dataId": "jd7ed9k0fy6zkq2mf3c5yc4v9d86x1as"
+    },
+    {
+      "label": "ecommerce.cart.add-item",
+      "method": "POST",
+      "path": "/v1/ecommerce/carts/jd7ed9k0fy6zkq2mf3c5yc4v9d86x1as/items",
+      "status": 200,
+      "dataId": "jd7ed9k0fy6zkq2mf3c5yc4v9d86x1as"
+    },
+    {
+      "label": "ecommerce.cart.detail",
+      "method": "GET",
+      "path": "/v1/ecommerce/carts/jd7ed9k0fy6zkq2mf3c5yc4v9d86x1as",
+      "status": 200,
+      "dataId": "jd7ed9k0fy6zkq2mf3c5yc4v9d86x1as"
+    },
+    {
+      "label": "ecommerce.checkout.create",
+      "method": "POST",
+      "path": "/v1/ecommerce/checkouts",
+      "status": 200,
+      "total": 298
+    },
+    {
+      "label": "ecommerce.order.detail",
+      "method": "GET",
+      "path": "/v1/ecommerce/orders/k9732f447gtdvzy2n821aeyv9n86xjr3",
+      "status": 200,
+      "dataId": "k9732f447gtdvzy2n821aeyv9n86xjr3",
+      "total": 298
+    },
+    {
+      "label": "real-estate.properties.search",
+      "method": "GET",
+      "path": "/v1/real-estate/properties?city=Austin",
+      "status": 200,
+      "count": 1
+    },
+    {
+      "label": "real-estate.property.detail",
+      "method": "GET",
+      "path": "/v1/real-estate/properties/property_austin_bungalow_01",
+      "status": 200,
+      "dataId": "property_austin_bungalow_01"
+    },
+    {
+      "label": "real-estate.booking.create",
+      "method": "POST",
+      "path": "/v1/real-estate/bookings",
+      "status": 200,
+      "dataId": "j97046455a81smt4r0f9rb5wk986w9gt",
+      "total": 0
+    },
+    {
+      "label": "stays.listings.search",
+      "method": "GET",
+      "path": "/v1/stays/listings?city=Sedona",
+      "status": 200,
+      "count": 1
+    },
+    {
+      "label": "stays.listing.detail",
+      "method": "GET",
+      "path": "/v1/stays/listings/stay_sedona_casita_01",
+      "status": 200,
+      "dataId": "stay_sedona_casita_01"
+    },
+    {
+      "label": "stays.reservation.create",
+      "method": "POST",
+      "path": "/v1/stays/reservations",
+      "status": 200,
+      "dataId": "j975sbv5fsey0vbsn2mhrn30fd86wjr8",
+      "total": 440
+    },
+    {
+      "label": "pokemon.list",
+      "method": "GET",
+      "path": "/v1/pokemon/pokemon?limit=5",
+      "status": 200
+    },
+    {
+      "label": "pokemon.detail",
+      "method": "GET",
+      "path": "/v1/pokemon/pokemon/bulbasaur",
+      "status": 200,
+      "dataId": 1
+    }
+  ],
+  "failures": [],
+  "mediaResults": [
+    {
+      "url": "http://localhost:9998/assets/cars/electra-northstar.jpg",
+      "resolvedUrl": "http://localhost:9998/assets/cars/electra-northstar.jpg",
+      "status": 200,
+      "contentType": "image/jpeg"
+    },
+    {
+      "url": "http://localhost:9998/assets/ecommerce/electronics.jpg",
+      "resolvedUrl": "http://localhost:9998/assets/ecommerce/electronics.jpg",
+      "status": 200,
+      "contentType": "image/jpeg"
+    },
+    {
+      "url": "http://localhost:9998/assets/real-estate/zilker-bungalow.jpg",
+      "resolvedUrl": "http://localhost:9998/assets/real-estate/zilker-bungalow.jpg",
+      "status": 200,
+      "contentType": "image/jpeg"
+    },
+    {
+      "url": "http://localhost:9998/assets/stays/sedona-casita.jpg",
+      "resolvedUrl": "http://localhost:9998/assets/stays/sedona-casita.jpg",
+      "status": 200,
+      "contentType": "image/jpeg"
+    },
+    {
+      "url": "/assets/real-estate/zilker-bungalow.jpg",
+      "resolvedUrl": "http://localhost:9998/assets/real-estate/zilker-bungalow.jpg",
+      "status": 200,
+      "contentType": "image/jpeg"
+    },
+    {
+      "url": "/assets/stays/sedona-casita.jpg",
+      "resolvedUrl": "http://localhost:9998/assets/stays/sedona-casita.jpg",
+      "status": 200,
+      "contentType": "image/jpeg"
+    }
+  ],
+  "mediaFailures": []
+}

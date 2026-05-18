@@ -11,15 +11,6 @@ import { asBoolean, asNumber, asString, clampLimit } from "../../lib/query";
 import type { VerticalContext } from "../../lib/vertical";
 import { productCategories, products, type Product } from "./data";
 
-const ecommerceAssetFallbacks: Record<string, string> = {
-  cat_apparel: "/assets/ecommerce/apparel.svg",
-  cat_home: "/assets/ecommerce/home.svg",
-  cat_electronics: "/assets/ecommerce/electronics.svg",
-  cat_wellness: "/assets/ecommerce/home.svg",
-  cat_outdoor: "/assets/ecommerce/apparel.svg",
-  cat_accessories: "/assets/ecommerce/electronics.svg"
-};
-
 export async function registerEcommerceRoutes(app: FastifyInstance, context: VerticalContext): Promise<void> {
   app.get("/v1/ecommerce/categories", async () => ({
     data: productCategories,
@@ -188,13 +179,11 @@ export async function registerEcommerceRoutes(app: FastifyInstance, context: Ver
 }
 
 function serializeProduct(product: Product, context: VerticalContext) {
-  const image = ecommerceAssetFallbacks[product.categoryId] ?? "/assets/ecommerce/home.svg";
-
   return {
     ...product,
     category: categoryForProduct(product),
-    heroImage: assetUrl(context.config, image),
-    gallery: product.gallery.map(() => assetUrl(context.config, image))
+    heroImage: assetUrl(context.config, product.heroImage),
+    gallery: product.gallery.map((image) => assetUrl(context.config, image))
   };
 }
 

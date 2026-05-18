@@ -231,9 +231,9 @@ function ApiWorkbench({
   endpoint: Parameters<typeof ResponseFormDialog>[0]["selectedEndpoint"];
 }) {
   return (
-    <section className="overflow-hidden rounded-lg border bg-card shadow-sm">
-      <div className="grid lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)]">
-        <div className="space-y-5 p-4 sm:p-5">
+    <section className="min-w-0 overflow-hidden rounded-lg border bg-card shadow-sm">
+      <div className="grid min-w-0 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)]">
+        <div className="min-w-0 space-y-5 p-4 sm:p-5">
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
               <Terminal className="h-3.5 w-3.5" />
@@ -264,7 +264,7 @@ function ApiWorkbench({
             </div>
           </div>
 
-          <Tabs defaultValue="curl" className="space-y-3">
+          <Tabs defaultValue="curl" className="min-w-0 space-y-3">
             <TabsList className="grid h-auto w-full grid-cols-2 md:grid-cols-4">
               <TabsTrigger value="curl">cURL</TabsTrigger>
               <TabsTrigger value="fetch">Fetch</TabsTrigger>
@@ -282,7 +282,7 @@ function ApiWorkbench({
           </Tabs>
         </div>
 
-        <aside className="border-t bg-muted/20 p-4 sm:p-5 lg:border-l lg:border-t-0">
+        <aside className="min-w-0 border-t bg-muted/20 p-4 sm:p-5 lg:border-l lg:border-t-0">
           <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
@@ -338,8 +338,8 @@ function SnippetTab({
   code: string;
 }) {
   return (
-    <TabsContent value={value} className="m-0 overflow-hidden rounded-md border bg-muted/20">
-      <div className="flex items-center justify-between border-b bg-background/60 px-3 py-2">
+    <TabsContent value={value} className="m-0 min-w-0 overflow-hidden rounded-md border bg-muted/20">
+      <div className="flex min-w-0 items-center justify-between gap-3 border-b bg-background/60 px-3 py-2">
         <span className="text-sm font-medium">{value === "curl" ? "cURL" : value}</span>
         <CopyButton value={code} label={label} toastLabel={toastLabel} size="sm" variant="ghost" />
       </div>

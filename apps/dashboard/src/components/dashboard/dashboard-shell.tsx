@@ -34,9 +34,15 @@ export function DashboardShell({
       <main className="min-w-0 px-4 py-5 md:px-6 lg:px-8">
         <header className="mb-6 flex flex-col gap-4 border-b pb-5">
           <div className="flex items-start justify-between gap-4">
-            <div className="min-w-0">
-              <div className="text-sm text-muted-foreground">API Operations Console</div>
-              <h1 className="mt-1 truncate text-2xl font-semibold md:text-3xl">Dummy API Platform</h1>
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center">
+                <img src="/logos/icon-dark.svg" alt="" className="h-10 w-10 dark:hidden" />
+                <img src="/logos/icon-light.svg" alt="" className="hidden h-10 w-10 dark:block" />
+              </div>
+              <div className="min-w-0">
+                <div className="text-sm text-muted-foreground">DRIO Operations Console</div>
+                <h1 className="mt-1 truncate text-2xl font-semibold md:text-3xl">API STORE</h1>
+              </div>
             </div>
             <div className="hidden shrink-0 items-center gap-2 lg:flex">
               <DashboardCommandMenu summary={summary} />

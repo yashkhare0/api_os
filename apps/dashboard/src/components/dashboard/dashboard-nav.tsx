@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import {
   Activity,
   Braces,
-  Database,
   KeyRound,
   Layers3,
   LogOut,
@@ -15,7 +14,6 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { logoutAction } from "@/app/dashboard/actions";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -65,12 +63,13 @@ export function DashboardNav({ username, counts }: { username: string; counts: N
   return (
     <>
       <div className="border-b p-5">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <Database className="h-5 w-5" />
-          </div>
+        <div className="space-y-2">
+          <Link href="/dashboard" className="block w-fit" aria-label="DRIO dashboard for API STORE">
+            <img src="/logos/full-dark.svg" alt="DRIO" className="h-10 w-auto dark:hidden" />
+            <img src="/logos/full-light.svg" alt="DRIO" className="hidden h-10 w-auto dark:block" />
+          </Link>
           <div className="min-w-0">
-            <div className="truncate text-sm font-semibold">API Console</div>
+            <div className="truncate text-sm font-semibold">API STORE</div>
             <div className="text-xs text-muted-foreground">Registry operations</div>
           </div>
         </div>
@@ -100,13 +99,6 @@ export function DashboardNav({ username, counts }: { username: string; counts: N
       </nav>
 
       <div className="border-t p-4">
-        <div className="mb-3 flex items-center justify-between rounded-md border bg-background p-3">
-          <div className="min-w-0">
-            <div className="text-xs text-muted-foreground">Signed in</div>
-            <div className="mt-1 truncate text-sm font-medium">{username}</div>
-          </div>
-          <Badge variant="outline">Admin</Badge>
-        </div>
         <div className="flex gap-2">
           <ThemeToggle />
           <DropdownMenu>
@@ -158,7 +150,13 @@ export function MobileDashboardNav({ counts }: { counts: NavCounts }) {
         </SheetTrigger>
         <SheetContent side="left" className="w-[320px]">
           <SheetHeader>
-            <SheetTitle>API Console</SheetTitle>
+            <SheetTitle>
+              <span className="inline-flex items-center">
+                <img src="/logos/full-dark.svg" alt="DRIO" className="h-9 w-auto dark:hidden" />
+                <img src="/logos/full-light.svg" alt="DRIO" className="hidden h-9 w-auto dark:block" />
+                <span className="ml-3 text-sm font-semibold">API STORE</span>
+              </span>
+            </SheetTitle>
             <SheetDescription>Jump between apps, APIs, responses, access, and usage.</SheetDescription>
           </SheetHeader>
           <nav className="mt-6 space-y-1">

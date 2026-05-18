@@ -16,8 +16,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Dummy API Platform",
-  description: "Admin dashboard for vertical dummy APIs."
+  title: "API STORE | DRIO",
+  description: "DRIO admin dashboard for API STORE.",
+  icons: {
+    icon: [
+      { url: "/logos/favicon.svg", type: "image/svg+xml" },
+      { url: "/logos/favicon-dark.svg", media: "(prefers-color-scheme: light)", type: "image/svg+xml" },
+      { url: "/logos/favicon-light.svg", media: "(prefers-color-scheme: dark)", type: "image/svg+xml" },
+      { url: "/logos/favicon.png", type: "image/png" }
+    ],
+    shortcut: "/logos/favicon.svg",
+    apple: "/logos/favicon.png"
+  }
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {

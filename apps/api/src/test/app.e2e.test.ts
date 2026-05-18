@@ -60,7 +60,7 @@ describe("public API end to end", () => {
     expect(body.data[0]).toMatchObject({
       id: "car_electra_suv_01",
       dealer: { id: "dealer_seattle_greenline" },
-      heroImage: "http://api.test/assets/cars/electra-northstar.svg"
+      heroImage: "http://api.test/assets/cars/electra-northstar.jpg"
     });
     expect(body.data[0].gallery).toHaveLength(2);
     await waitFor(() =>
@@ -207,7 +207,7 @@ describe("public API end to end", () => {
     expect(productsResponse.statusCode).toBe(200);
     expect(productsResponse.json().data[0]).toMatchObject({
       id: "prod_noise_canceling_earbuds_01",
-      heroImage: "http://api.test/assets/ecommerce/electronics.svg"
+      heroImage: "http://api.test/assets/ecommerce/electronics.jpg"
     });
 
     const cartResponse = await app.inject({
@@ -268,6 +268,33 @@ describe("public API end to end", () => {
   });
 
   it("completes booking journeys for real estate and stays", async () => {
+    const propertiesResponse = await app.inject({
+      method: "GET",
+      url: "/v1/real-estate/properties?city=Austin",
+      headers: { "x-api-key": apiKey }
+    });
+    expect(propertiesResponse.statusCode).toBe(200);
+    expect(propertiesResponse.json().data[0]).toMatchObject({
+      id: "property_austin_bungalow_01",
+      heroImage: "http://api.test/assets/real-estate/zilker-bungalow.jpg"
+    });
+    expect(propertiesResponse.json().data[0].gallery).toEqual([
+      "http://api.test/assets/real-estate/zilker-bungalow.jpg",
+      "http://api.test/assets/real-estate/zilker-bungalow-living.png",
+      "http://api.test/assets/real-estate/zilker-bungalow-yard.png"
+    ]);
+
+    const listingsResponse = await app.inject({
+      method: "GET",
+      url: "/v1/stays/listings?city=Sedona",
+      headers: { "x-api-key": apiKey }
+    });
+    expect(listingsResponse.statusCode).toBe(200);
+    expect(listingsResponse.json().data[0]).toMatchObject({
+      id: "stay_sedona_casita_01",
+      heroImage: "http://api.test/assets/stays/sedona-casita.jpg"
+    });
+
     const realEstateResponse = await app.inject({
       method: "POST",
       url: "/v1/real-estate/bookings",
@@ -307,6 +334,97 @@ describe("public API end to end", () => {
       verticalSlug: "stays",
       itemId: "stay_sedona_casita_01",
       total: 440
+    });
+  });
+
+  it("filters and fetches real estate listings with hosted gallery media", async () => {
+    const response = await app.inject({
+      method: "GET",
+      url: "/v1/real-estate/properties?propertyType=townhouse&minBedrooms=4&minBathrooms=2.5&limit=1",
+      headers: { "x-api-key": apiKey }
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toMatchObject({
+      data: [
+        {
+          id: "property_denver_townhome_01",
+          city: "Denver",
+          propertyType: "townhouse",
+          listingAgent: {
+            brokerage: "Front Range Collective"
+          }
+        }
+      ],
+      meta: { count: 1 }
+    });
+    expect(response.json().data[0].gallery).toContain(
+      "http://api.test/assets/real-estate/highlands-townhome-rooftop.png"
+    );
+
+    const detailResponse = await app.inject({
+      method: "GET",
+      url: "/v1/real-estate/properties/property_chicago_loft_01",
+      headers: { "x-api-key": apiKey }
+    });
+
+    expect(detailResponse.statusCode).toBe(200);
+    expect(detailResponse.json().data).toMatchObject({
+      id: "property_chicago_loft_01",
+      neighborhood: "West Loop",
+      coordinates: { latitude: 41.8864, longitude: -87.6491 }
+    });
+    expect(detailResponse.json().data.gallery).toEqual([
+      "http://api.test/assets/real-estate/west-loop-loft.jpg",
+      "http://api.test/assets/real-estate/west-loop-loft-kitchen.png",
+      "http://api.test/assets/real-estate/west-loop-loft-bedroom.png"
+    ]);
+
+    const assetResponse = await app.inject({
+      method: "GET",
+      url: "/assets/real-estate/west-loop-loft-kitchen.png"
+    });
+    expect(assetResponse.statusCode).toBe(200);
+    expect(assetResponse.headers["content-type"]).toContain("image/png");
+  });
+
+  it("rejects invalid real estate requests", async () => {
+    const missingDetailResponse = await app.inject({
+      method: "GET",
+      url: "/v1/real-estate/properties/missing",
+      headers: { "x-api-key": apiKey }
+    });
+    expect(missingDetailResponse.statusCode).toBe(404);
+    expect(missingDetailResponse.json()).toMatchObject({
+      error: { code: "not_found" }
+    });
+
+    const invalidRangeResponse = await app.inject({
+      method: "GET",
+      url: "/v1/real-estate/properties?minPrice=900000&maxPrice=100000",
+      headers: { "x-api-key": apiKey }
+    });
+    expect(invalidRangeResponse.statusCode).toBe(400);
+    expect(invalidRangeResponse.json()).toMatchObject({
+      error: { code: "bad_request" }
+    });
+
+    const invalidBookingResponse = await app.inject({
+      method: "POST",
+      url: "/v1/real-estate/bookings",
+      headers: {
+        "x-api-key": apiKey,
+        "content-type": "application/json"
+      },
+      payload: {
+        propertyId: "property_austin_bungalow_01",
+        startDate: "2026-06-01T11:00:00.000Z",
+        endDate: "2026-06-01T10:30:00.000Z"
+      }
+    });
+    expect(invalidBookingResponse.statusCode).toBe(400);
+    expect(invalidBookingResponse.json()).toMatchObject({
+      error: { code: "bad_request" }
     });
   });
 

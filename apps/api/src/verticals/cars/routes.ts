@@ -13,18 +13,6 @@ import { asNumber, asString, clampLimit } from "../../lib/query";
 import type { VerticalContext } from "../../lib/vertical";
 import { carDealers, carListings, type CarDealer, type CarListing } from "./data";
 
-const hostedCarImages = new Set([
-  "/assets/cars/aston-vale.svg",
-  "/assets/cars/electra-northstar.svg",
-  "/assets/cars/metro-pulse.svg"
-]);
-
-const carImageFallbacks: Record<string, string> = {
-  Aster: "/assets/cars/aston-vale.svg",
-  Electra: "/assets/cars/electra-northstar.svg",
-  Metro: "/assets/cars/metro-pulse.svg"
-};
-
 export async function registerCarRoutes(app: FastifyInstance, context: VerticalContext): Promise<void> {
   app.get("/v1/cars/listings", { schema: { querystring: carListingsQuerySchema } }, async (request) => {
     const query = request.query as Record<string, unknown>;
@@ -215,26 +203,17 @@ export async function registerCarRoutes(app: FastifyInstance, context: VerticalC
 
 function serializeCarListing(listing: CarListing, context: VerticalContext) {
   const dealer = carDealers.find((item) => item.id === listing.dealerId);
-  const heroImage = hostedCarImage(listing.heroImage, listing);
 
   return {
     ...listing,
     ...(dealer ? { dealer: serializeDealer(dealer) } : {}),
-    heroImage: assetUrl(context.config, heroImage),
-    gallery: listing.gallery.map((image) => assetUrl(context.config, hostedCarImage(image, listing)))
+    heroImage: assetUrl(context.config, listing.heroImage),
+    gallery: listing.gallery.map((image) => assetUrl(context.config, image))
   };
 }
 
 function serializeDealer(dealer: CarDealer) {
   return dealer;
-}
-
-function hostedCarImage(image: string, listing: CarListing): string {
-  if (hostedCarImages.has(image)) {
-    return image;
-  }
-
-  return carImageFallbacks[listing.make] ?? "/assets/cars/aston-vale.svg";
 }
 
 function calculateFinancingEstimate(input: {

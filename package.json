@@ -1,6 +1,7 @@
 {
-  "name": "dummy-api-platform",
+  "name": "api-store",
   "version": "0.1.0",
+  "license": "MIT",
   "private": true,
   "packageManager": "pnpm@10.23.0",
   "scripts": {

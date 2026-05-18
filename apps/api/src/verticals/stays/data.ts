@@ -22,8 +22,8 @@ export const stayListings: StayListing[] = [
     maxGuests: 2,
     rating: 4.93,
     host: "Maya",
-    heroImage: "/assets/stays/malibu-canyon.svg",
-    gallery: ["/assets/stays/malibu-canyon.svg"],
+    heroImage: "/assets/stays/malibu-canyon.jpg",
+    gallery: ["/assets/stays/malibu-canyon.jpg"],
     amenities: ["Ocean view", "Kitchen", "Private deck"]
   },
   {
@@ -35,8 +35,8 @@ export const stayListings: StayListing[] = [
     maxGuests: 6,
     rating: 4.88,
     host: "Jonas",
-    heroImage: "/assets/stays/catskills-aframe.svg",
-    gallery: ["/assets/stays/catskills-aframe.svg"],
+    heroImage: "/assets/stays/catskills-aframe.jpg",
+    gallery: ["/assets/stays/catskills-aframe.jpg"],
     amenities: ["Hot tub", "Fireplace", "Trail access"]
   },
   {
@@ -48,8 +48,8 @@ export const stayListings: StayListing[] = [
     maxGuests: 4,
     rating: 4.96,
     host: "Elena",
-    heroImage: "/assets/stays/sedona-casita.svg",
-    gallery: ["/assets/stays/sedona-casita.svg"],
+    heroImage: "/assets/stays/sedona-casita.jpg",
+    gallery: ["/assets/stays/sedona-casita.jpg"],
     amenities: ["Patio", "Washer", "Dedicated workspace"]
   }
 ];

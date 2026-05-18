@@ -1,0 +1,117 @@
+[
+  {
+    "name": "apps-index",
+    "url": "http://localhost:9998/dashboard/apps",
+    "title": "API STORE | DRIO",
+    "hasApiStore": true,
+    "brokenImages": [],
+    "consoleIssues": []
+  },
+  {
+    "name": "apis-index",
+    "url": "http://localhost:9998/dashboard/apis",
+    "title": "API STORE | DRIO",
+    "hasApiStore": true,
+    "brokenImages": [],
+    "consoleIssues": []
+  },
+  {
+    "name": "responses-index",
+    "url": "http://localhost:9998/dashboard/responses",
+    "title": "API STORE | DRIO",
+    "hasApiStore": true,
+    "brokenImages": [],
+    "consoleIssues": []
+  },
+  {
+    "name": "usage-index",
+    "url": "http://localhost:9998/dashboard/usage",
+    "title": "API STORE | DRIO",
+    "hasApiStore": true,
+    "brokenImages": [],
+    "consoleIssues": []
+  },
+  {
+    "name": "cars-app",
+    "url": "http://localhost:9998/dashboard/apps/cars",
+    "title": "API STORE | DRIO",
+    "hasApiStore": true,
+    "brokenImages": [],
+    "consoleIssues": []
+  },
+  {
+    "name": "ecommerce-app",
+    "url": "http://localhost:9998/dashboard/apps/ecommerce",
+    "title": "API STORE | DRIO",
+    "hasApiStore": true,
+    "brokenImages": [
+      {
+        "alt": "Wireless earbuds",
+        "complete": false,
+        "naturalHeight": 0,
+        "naturalWidth": 0,
+        "src": "http://localhost:9999/assets/ecommerce/electronics.jpg"
+      },
+      {
+        "alt": "Outdoor gear",
+        "complete": false,
+        "naturalHeight": 0,
+        "naturalWidth": 0,
+        "src": "http://localhost:9999/assets/ecommerce/outdoor.jpg"
+      },
+      {
+        "alt": "Home goods",
+        "complete": false,
+        "naturalHeight": 0,
+        "naturalWidth": 0,
+        "src": "http://localhost:9999/assets/ecommerce/home.jpg"
+      },
+      {
+        "alt": "Noise-canceling earbuds",
+        "complete": false,
+        "naturalHeight": 0,
+        "naturalWidth": 0,
+        "src": "http://localhost:9999/assets/ecommerce/electronics.jpg"
+      },
+      {
+        "alt": "Six-category catalog",
+        "complete": false,
+        "naturalHeight": 0,
+        "naturalWidth": 0,
+        "src": "http://localhost:9999/assets/ecommerce/apparel.jpg"
+      },
+      {
+        "alt": "Order confirmation",
+        "complete": false,
+        "naturalHeight": 0,
+        "naturalWidth": 0,
+        "src": "http://localhost:9999/assets/ecommerce/accessories.jpg"
+      }
+    ],
+    "consoleIssues": []
+  },
+  {
+    "name": "real-estate-app",
+    "url": "http://localhost:9998/dashboard/apps/real-estate",
+    "title": "API STORE | DRIO",
+    "hasApiStore": true,
+    "brokenImages": [],
+    "consoleIssues": []
+  },
+  {
+    "name": "stays-app",
+    "url": "http://localhost:9998/dashboard/apps/stays",
+    "title": "API STORE | DRIO",
+    "hasApiStore": true,
+    "brokenImages": [],
+    "consoleIssues": []
+  },
+  {
+    "name": "pokemon-app",
+    "url": "http://localhost:9998/dashboard/apps/pokemon",
+    "title": "API STORE | DRIO",
+    "hasApiStore": true,
+    "brokenImages": [],
+    "consoleIssues": []
+  }
+]

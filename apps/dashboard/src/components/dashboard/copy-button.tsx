@@ -51,7 +51,7 @@ export function CopyButton({
           type="button"
           variant={variant}
           size={size}
-          className={cn(copied && "text-foreground", className)}
+          className={cn("shrink-0", copied && "text-foreground", className)}
           onClick={copyValue}
           aria-label={label}
         >

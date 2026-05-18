@@ -90,7 +90,7 @@ function queryFieldsForContract(contractId: string, fields: SchemaField[]): Sche
     "cars.listings.list": ["make", "bodyStyle", "fuelType"],
     "cars.dealers.list": ["state"],
     "ecommerce.products.list": ["category", "q", "limit"],
-    "real-estate.properties.list": ["city", "limit"],
+    "real-estate.properties.list": ["propertyType", "minBedrooms"],
     "stays.listings.list": ["city", "guests"],
     "pokemon.pokemon.list": ["limit"]
   };

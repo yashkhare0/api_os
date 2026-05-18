@@ -93,8 +93,14 @@ export const realEstatePropertiesQuerySchema = {
   type: "object",
   properties: {
     city: { type: "string", minLength: 1 },
+    propertyType: {
+      type: "string",
+      enum: ["condo", "house", "townhouse"]
+    },
     minPrice: { type: "number", minimum: 0 },
     maxPrice: { type: "number", minimum: 0 },
+    minBedrooms: { type: "integer", minimum: 0 },
+    minBathrooms: { type: "number", minimum: 0 },
     limit: { type: "integer", minimum: 1, maximum: 100 }
   },
   additionalProperties: false

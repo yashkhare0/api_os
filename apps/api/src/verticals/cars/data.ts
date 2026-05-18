@@ -39,6 +39,11 @@ export type CarListing = {
   features: string[];
 };
 
+function carImages(fileName: string): Pick<CarListing, "heroImage" | "gallery"> {
+  const image = `/assets/cars/${fileName}`;
+  return { heroImage: image, gallery: [image, image] };
+}
+
 export const carDealers: CarDealer[] = [
   {
     id: "dealer_austin_modern_motors",
@@ -123,8 +128,8 @@ export const carListings: CarListing[] = [
     drivetrain: "FWD",
     mpgCity: 48,
     mpgHighway: 44,
-    heroImage: "/assets/cars/aster-vale-hero.svg",
-    gallery: ["/assets/cars/aster-vale-interior.svg", "/assets/cars/aster-vale-rear.svg"],
+    heroImage: "/assets/cars/aster-vale.jpg",
+    gallery: ["/assets/cars/aster-vale.jpg", "/assets/cars/aster-vale.jpg"],
     features: ["Adaptive cruise", "Panoramic roof", "Lane assist", "Ventilated seats"]
   },
   {
@@ -146,8 +151,8 @@ export const carListings: CarListing[] = [
     interiorColor: "Charcoal",
     drivetrain: "AWD",
     rangeMiles: 420,
-    heroImage: "/assets/cars/electra-northstar-hero.svg",
-    gallery: ["/assets/cars/electra-northstar-interior.svg", "/assets/cars/electra-northstar-rear.svg"],
+    heroImage: "/assets/cars/electra-northstar.jpg",
+    gallery: ["/assets/cars/electra-northstar.jpg", "/assets/cars/electra-northstar.jpg"],
     features: ["420 mile range", "Fast charge", "All-wheel drive", "Glass roof"]
   },
   {
@@ -170,8 +175,8 @@ export const carListings: CarListing[] = [
     drivetrain: "FWD",
     mpgCity: 31,
     mpgHighway: 39,
-    heroImage: "/assets/cars/metro-pulse-hero.svg",
-    gallery: ["/assets/cars/metro-pulse-interior.svg", "/assets/cars/metro-pulse-rear.svg"],
+    heroImage: "/assets/cars/metro-pulse.jpg",
+    gallery: ["/assets/cars/metro-pulse.jpg", "/assets/cars/metro-pulse.jpg"],
     features: ["Backup camera", "Wireless CarPlay", "Heated seats", "Blind spot monitor"]
   },
   {
@@ -194,8 +199,8 @@ export const carListings: CarListing[] = [
     drivetrain: "RWD",
     mpgCity: 22,
     mpgHighway: 31,
-    heroImage: "/assets/cars/velo-aria-hero.svg",
-    gallery: ["/assets/cars/velo-aria-interior.svg", "/assets/cars/velo-aria-rear.svg"],
+    heroImage: "/assets/cars/metro-pulse.jpg",
+    gallery: ["/assets/cars/metro-pulse.jpg", "/assets/cars/metro-pulse.jpg"],
     features: ["Sport exhaust", "Limited-slip differential", "Performance seats", "Brembo-style brakes"]
   },
   {
@@ -219,8 +224,8 @@ export const carListings: CarListing[] = [
     rangeMiles: 38,
     mpgCity: 52,
     mpgHighway: 47,
-    heroImage: "/assets/cars/orion-meadow-hero.svg",
-    gallery: ["/assets/cars/orion-meadow-interior.svg", "/assets/cars/orion-meadow-rear.svg"],
+    heroImage: "/assets/cars/aster-vale.jpg",
+    gallery: ["/assets/cars/aster-vale.jpg", "/assets/cars/aster-vale.jpg"],
     features: ["Plug-in hybrid range", "Roof rails", "Heated steering wheel", "Cargo organizer"]
   },
   {
@@ -243,8 +248,8 @@ export const carListings: CarListing[] = [
     drivetrain: "4WD",
     mpgCity: 24,
     mpgHighway: 29,
-    heroImage: "/assets/cars/nova-ridge-hero.svg",
-    gallery: ["/assets/cars/nova-ridge-interior.svg", "/assets/cars/nova-ridge-rear.svg"],
+    heroImage: "/assets/cars/aster-vale.jpg",
+    gallery: ["/assets/cars/aster-vale.jpg", "/assets/cars/aster-vale.jpg"],
     features: ["Tow package", "Spray-in bedliner", "360 camera", "Locking rear differential"]
   },
   {
@@ -267,8 +272,8 @@ export const carListings: CarListing[] = [
     drivetrain: "AWD",
     mpgCity: 41,
     mpgHighway: 38,
-    heroImage: "/assets/cars/luma-harbor-hero.svg",
-    gallery: ["/assets/cars/luma-harbor-interior.svg", "/assets/cars/luma-harbor-rear.svg"],
+    heroImage: "/assets/cars/electra-northstar.jpg",
+    gallery: ["/assets/cars/electra-northstar.jpg", "/assets/cars/electra-northstar.jpg"],
     features: ["Third-row seating", "Hands-free liftgate", "Navigation", "Heated second row"]
   },
   {
@@ -290,8 +295,8 @@ export const carListings: CarListing[] = [
     interiorColor: "Navy",
     drivetrain: "AWD",
     rangeMiles: 386,
-    heroImage: "/assets/cars/zenith-crest-hero.svg",
-    gallery: ["/assets/cars/zenith-crest-interior.svg", "/assets/cars/zenith-crest-rear.svg"],
+    heroImage: "/assets/cars/electra-northstar.jpg",
+    gallery: ["/assets/cars/electra-northstar.jpg", "/assets/cars/electra-northstar.jpg"],
     features: ["Adaptive air suspension", "Executive rear seating", "Bidirectional charging", "HUD"]
   },
   {
@@ -314,8 +319,8 @@ export const carListings: CarListing[] = [
     drivetrain: "FWD",
     mpgCity: 36,
     mpgHighway: 34,
-    heroImage: "/assets/cars/terra-wayfarer-hero.svg",
-    gallery: ["/assets/cars/terra-wayfarer-interior.svg", "/assets/cars/terra-wayfarer-rear.svg"],
+    heroImage: "/assets/cars/aster-vale.jpg",
+    gallery: ["/assets/cars/aster-vale.jpg", "/assets/cars/aster-vale.jpg"],
     features: ["Power sliding doors", "Rear entertainment", "Stow-flat seats", "Adaptive cruise"]
   },
   {
@@ -337,8 +342,8 @@ export const carListings: CarListing[] = [
     interiorColor: "Slate",
     drivetrain: "FWD",
     rangeMiles: 244,
-    heroImage: "/assets/cars/halo-city-hero.svg",
-    gallery: ["/assets/cars/halo-city-interior.svg", "/assets/cars/halo-city-rear.svg"],
+    heroImage: "/assets/cars/electra-northstar.jpg",
+    gallery: ["/assets/cars/electra-northstar.jpg", "/assets/cars/electra-northstar.jpg"],
     features: ["One-pedal drive", "Compact parking assist", "Heat pump", "Wireless charging"]
   },
   {
@@ -361,8 +366,8 @@ export const carListings: CarListing[] = [
     drivetrain: "AWD",
     mpgCity: 21,
     mpgHighway: 28,
-    heroImage: "/assets/cars/bristol-quarry-hero.svg",
-    gallery: ["/assets/cars/bristol-quarry-interior.svg", "/assets/cars/bristol-quarry-rear.svg"],
+    heroImage: "/assets/cars/electra-northstar.jpg",
+    gallery: ["/assets/cars/electra-northstar.jpg", "/assets/cars/electra-northstar.jpg"],
     features: ["Leather seating", "Premium audio", "Tow hitch", "Tri-zone climate"]
   },
   {
@@ -385,8 +390,8 @@ export const carListings: CarListing[] = [
     drivetrain: "4WD",
     mpgCity: 19,
     mpgHighway: 24,
-    heroImage: "/assets/cars/cobalt-range-hero.svg",
-    gallery: ["/assets/cars/cobalt-range-interior.svg", "/assets/cars/cobalt-range-rear.svg"],
+    heroImage: "/assets/cars/aster-vale.jpg",
+    gallery: ["/assets/cars/aster-vale.jpg", "/assets/cars/aster-vale.jpg"],
     features: ["Crew cab", "Bed step", "Trailer brake controller", "All-terrain tires"]
   },
   {
@@ -408,8 +413,8 @@ export const carListings: CarListing[] = [
     interiorColor: "Black",
     drivetrain: "RWD",
     rangeMiles: 305,
-    heroImage: "/assets/cars/solace-eon-hero.svg",
-    gallery: ["/assets/cars/solace-eon-interior.svg", "/assets/cars/solace-eon-rear.svg"],
+    heroImage: "/assets/cars/electra-northstar.jpg",
+    gallery: ["/assets/cars/electra-northstar.jpg", "/assets/cars/electra-northstar.jpg"],
     features: ["Performance mode", "Glass canopy", "Sport seats", "Fast charge"]
   },
   {
@@ -432,8 +437,8 @@ export const carListings: CarListing[] = [
     drivetrain: "FWD",
     mpgCity: 29,
     mpgHighway: 37,
-    heroImage: "/assets/cars/meridian-line-hero.svg",
-    gallery: ["/assets/cars/meridian-line-interior.svg", "/assets/cars/meridian-line-rear.svg"],
+    heroImage: "/assets/cars/aster-vale.jpg",
+    gallery: ["/assets/cars/aster-vale.jpg", "/assets/cars/aster-vale.jpg"],
     features: ["Remote start", "Lane keeping", "Power driver seat", "Dual-zone climate"]
   },
   {
@@ -457,8 +462,8 @@ export const carListings: CarListing[] = [
     rangeMiles: 44,
     mpgCity: 50,
     mpgHighway: 46,
-    heroImage: "/assets/cars/atlas-shore-hero.svg",
-    gallery: ["/assets/cars/atlas-shore-interior.svg", "/assets/cars/atlas-shore-rear.svg"],
+    heroImage: "/assets/cars/aster-vale.jpg",
+    gallery: ["/assets/cars/aster-vale.jpg", "/assets/cars/aster-vale.jpg"],
     features: ["Raised suspension", "Skid plates", "Panoramic roof", "Tow mode"]
   },
   {
@@ -481,8 +486,8 @@ export const carListings: CarListing[] = [
     drivetrain: "FWD",
     mpgCity: 53,
     mpgHighway: 48,
-    heroImage: "/assets/cars/prism-nimble-hero.svg",
-    gallery: ["/assets/cars/prism-nimble-interior.svg", "/assets/cars/prism-nimble-rear.svg"],
+    heroImage: "/assets/cars/metro-pulse.jpg",
+    gallery: ["/assets/cars/metro-pulse.jpg", "/assets/cars/metro-pulse.jpg"],
     features: ["City safety suite", "Fold-flat rear seats", "Smart key", "Rain-sensing wipers"]
   },
   {
@@ -505,8 +510,8 @@ export const carListings: CarListing[] = [
     drivetrain: "4WD",
     mpgCity: 23,
     mpgHighway: 27,
-    heroImage: "/assets/cars/riven-summit-hero.svg",
-    gallery: ["/assets/cars/riven-summit-interior.svg", "/assets/cars/riven-summit-rear.svg"],
+    heroImage: "/assets/cars/electra-northstar.jpg",
+    gallery: ["/assets/cars/electra-northstar.jpg", "/assets/cars/electra-northstar.jpg"],
     features: ["Air suspension", "Terrain response", "Roof platform", "Underbody cameras"]
   },
   {
@@ -528,8 +533,8 @@ export const carListings: CarListing[] = [
     interiorColor: "Gray",
     drivetrain: "RWD",
     rangeMiles: 268,
-    heroImage: "/assets/cars/flux-parcel-hero.svg",
-    gallery: ["/assets/cars/flux-parcel-interior.svg", "/assets/cars/flux-parcel-rear.svg"],
+    heroImage: "/assets/cars/electra-northstar.jpg",
+    gallery: ["/assets/cars/electra-northstar.jpg", "/assets/cars/electra-northstar.jpg"],
     features: ["High roof", "Fleet telematics", "Sliding cargo door", "DC fast charging"]
   },
   {
@@ -552,8 +557,8 @@ export const carListings: CarListing[] = [
     drivetrain: "FWD",
     mpgCity: 28,
     mpgHighway: 36,
-    heroImage: "/assets/cars/sierra-avenue-hero.svg",
-    gallery: ["/assets/cars/sierra-avenue-interior.svg", "/assets/cars/sierra-avenue-rear.svg"],
+    heroImage: "/assets/cars/aster-vale.jpg",
+    gallery: ["/assets/cars/aster-vale.jpg", "/assets/cars/aster-vale.jpg"],
     features: ["Premium audio", "Surround view", "Cooled seats", "Rear cross-traffic alert"]
   },
   {
@@ -575,8 +580,8 @@ export const carListings: CarListing[] = [
     interiorColor: "Light Gray",
     drivetrain: "AWD",
     rangeMiles: 448,
-    heroImage: "/assets/cars/aurora-trail-hero.svg",
-    gallery: ["/assets/cars/aurora-trail-interior.svg", "/assets/cars/aurora-trail-rear.svg"],
+    heroImage: "/assets/cars/electra-northstar.jpg",
+    gallery: ["/assets/cars/electra-northstar.jpg", "/assets/cars/electra-northstar.jpg"],
     features: ["Long range battery", "Adaptive headlights", "Camp mode", "Tri-zone climate"]
   }
 ];

@@ -1,4 +1,5 @@
 import path from "node:path";
+import { existsSync } from "node:fs";
 import { buildApp } from "@dummy-api/api/app";
 import { getConfig } from "@dummy-api/api/config";
 
@@ -57,10 +58,19 @@ async function getEmbeddedApi(origin: string): Promise<EmbeddedApi> {
     apiBaseUrl: origin,
     corsOrigin: process.env.CORS_ORIGIN ?? origin
   };
-  const assetsRoot = path.resolve(process.cwd(), "../api/public/assets");
+  const assetsRoot = resolveAssetsRoot();
   const appPromise = buildApp({ assetsRoot, config, logger: false });
   globalForApi.__dummyApiApps.set(origin, appPromise);
   return appPromise;
+}
+
+function resolveAssetsRoot(): string {
+  const repoRootAssets = path.resolve(process.cwd(), "apps/api/public/assets");
+  if (existsSync(repoRootAssets)) {
+    return repoRootAssets;
+  }
+
+  return path.resolve(process.cwd(), "../api/public/assets");
 }
 
 function responseHeaders(headers: Record<string, number | string | string[] | undefined>): Headers {

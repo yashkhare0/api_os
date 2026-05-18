@@ -1,0 +1,42 @@
+[
+  {
+    "appSlug": "cars",
+    "endpointText": "GET /v1/cars/listings",
+    "url": "http://localhost:9998/dashboard/apps/cars/apis/jx72wt1gmddjpzfnt6pdfg4p9h86nxmk",
+    "status": "200",
+    "hasData": false,
+    "errorMention": false
+  },
+  {
+    "appSlug": "ecommerce",
+    "endpointText": "GET /v1/ecommerce/categories",
+    "url": "http://localhost:9998/dashboard/apps/ecommerce/apis/jx72c6srdg42hbsh9q99sxf9xh86m6fx",
+    "status": "200",
+    "hasData": false,
+    "errorMention": false
+  },
+  {
+    "appSlug": "real-estate",
+    "endpointText": "GET /v1/real-estate/properties",
+    "url": "http://localhost:9998/dashboard/apps/real-estate/apis/jx75893pdhph9c4sf1c00m6cqd86mtkm",
+    "status": "200",
+    "hasData": false,
+    "errorMention": false
+  },
+  {
+    "appSlug": "stays",
+    "endpointText": "GET /v1/stays/listings",
+    "url": "http://localhost:9998/dashboard/apps/stays/apis/jx73a77k3p5m51n2hm4ph8rawx86n1zr",
+    "status": "200",
+    "hasData": false,
+    "errorMention": false
+  },
+  {
+    "appSlug": "pokemon",
+    "endpointText": "GET /v1/pokemon/pokemon",
+    "url": "http://localhost:9998/dashboard/apps/pokemon/apis/jx73t27atjk4zpdys8wzdaj3xs86m0pe",
+    "status": "200",
+    "hasData": true,
+    "errorMention": false
+  }
+]

@@ -140,20 +140,20 @@ export function ApiQuickTestDialog({
           Quick test
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
+      <DialogContent className="max-h-[90vh] sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle>API quick test</DialogTitle>
           <DialogDescription>
             Run this public endpoint from the browser with a pasted API key. The key stays in this dialog.
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4">
+        <div className="min-w-0 space-y-4">
           <Card>
             <CardContent className="space-y-3 p-4">
-              <div className="flex items-center justify-between gap-3">
-                <div className="min-w-0">
+              <div className="flex min-w-0 items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
                   <div className="text-xs text-muted-foreground">Request</div>
-                  <div className="mt-1 truncate font-mono text-sm">
+                  <div className="mt-1 break-all font-mono text-sm">
                     <span className="font-semibold text-foreground">{method}</span> {requestUrl}
                   </div>
                 </div>
@@ -203,10 +203,10 @@ export function ApiQuickTestDialog({
                 </div>
               ) : null}
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <div className="text-xs text-muted-foreground">
+                <div className="min-w-0 text-xs text-muted-foreground">
                   Response status, time, and body will appear here after the request completes.
                 </div>
-                <Button type="button" onClick={runRequest} disabled={pending} className="gap-2">
+                <Button type="button" onClick={runRequest} disabled={pending} className="w-full gap-2 sm:w-auto">
                   {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Play className="h-4 w-4" />}
                   {pending ? "Running" : "Run request"}
                 </Button>

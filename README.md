@@ -1,6 +1,6 @@
-# Dummy API Platform
+# API STORE
 
-Production-grade TypeScript scaffold for vertical dummy APIs, with Fastify public APIs, a Next.js admin dashboard, and Convex-backed runtime state.
+API STORE is DRIO's production-grade TypeScript scaffold for vertical dummy APIs, with Fastify public APIs, a Next.js admin dashboard, and Convex-backed runtime state.
 
 ## Structure
 
@@ -113,7 +113,17 @@ pnpm build
 
 ## Deployment
 
-Deploy `apps/dashboard` as the single Vercel project. It embeds the Fastify API module, so `/dashboard/*`, `/v1/*`, `/assets/*`, and `/health/*` are served from one origin. The project needs:
+Deploy the repository root as one Vercel project. Do not create separate Vercel projects for `apps/api` and `apps/dashboard`; the root `vercel.json` builds `@dummy-api/dashboard`, which embeds the Fastify API module so `/dashboard/*`, `/v1/*`, `/assets/*`, and `/health/*` are served from one origin.
+
+Use these Vercel project settings:
+
+- Root Directory: `.`
+- Framework Preset: Next.js
+- Install Command: `pnpm install --frozen-lockfile`
+- Build Command: `pnpm --filter @dummy-api/dashboard build`
+- Output Directory: `apps/dashboard/.next`
+
+The project needs:
 
 - `CONVEX_HTTP_URL`
 - `INTERNAL_API_SECRET`
@@ -123,3 +133,7 @@ Deploy `apps/dashboard` as the single Vercel project. It embeds the Fastify API 
 - `API_PUBLIC_BASE_URL`
 - `CORS_ORIGIN`
 - `POKEAPI_BASE_URL`
+
+## License
+
+MIT. See [LICENSE](./LICENSE).
