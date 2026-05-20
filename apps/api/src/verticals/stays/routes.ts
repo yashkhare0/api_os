@@ -1,12 +1,11 @@
 import type { FastifyInstance } from "fastify";
 import { stayListingsQuerySchema, stayReservationBodySchema } from "@dummy-api/contracts";
+import type { StayListing } from "@dummy-api/catalog";
 import type { AuthenticatedRequest } from "../../types";
-import { assetUrl } from "../../lib/assets";
 import { parseIsoDate } from "../../lib/date";
 import { badRequest, notFound } from "../../lib/http-error";
 import { asNumber, asString, clampLimit } from "../../lib/query";
 import type { VerticalContext } from "../../lib/vertical";
-import { stayListings, type StayListing } from "./data";
 
 export async function registerStayRoutes(app: FastifyInstance, context: VerticalContext): Promise<void> {
   app.get("/v1/stays/listings", { schema: { querystring: stayListingsQuerySchema } }, async (request) => {
@@ -15,26 +14,27 @@ export async function registerStayRoutes(app: FastifyInstance, context: Vertical
     const guests = asNumber(query.guests);
     const maxNightlyRate = asNumber(query.maxNightlyRate);
     const limit = clampLimit(query.limit);
+    const stayListings = await context.store.listStayListings();
 
     const filtered = stayListings
       .filter((listing) => !city || listing.city.toLowerCase() === city)
       .filter((listing) => guests === undefined || listing.maxGuests >= guests)
       .filter((listing) => maxNightlyRate === undefined || listing.nightlyRate <= maxNightlyRate)
       .slice(0, limit)
-      .map((listing) => serializeStay(listing, context));
+      .map(serializeStay);
 
     return { data: filtered, meta: { count: filtered.length } };
   });
 
   app.get("/v1/stays/listings/:id", async (request) => {
     const { id } = request.params as { id: string };
-    const listing = stayListings.find((item) => item.id === id);
+    const listing = await context.store.getStayListing(id);
 
     if (!listing) {
       throw notFound("Stay listing");
     }
 
-    return { data: serializeStay(listing, context) };
+    return { data: serializeStay(listing) };
   });
 
   app.post("/v1/stays/reservations", { schema: { body: stayReservationBodySchema } }, async (request) => {
@@ -46,7 +46,7 @@ export async function registerStayRoutes(app: FastifyInstance, context: Vertical
       guests: number;
       guestName?: string;
     };
-    const listing = stayListings.find((item) => item.id === body.listingId);
+    const listing = await context.store.getStayListing(body.listingId);
 
     if (!listing) {
       throw badRequest("listingId does not match an available stay.");
@@ -74,10 +74,6 @@ export async function registerStayRoutes(app: FastifyInstance, context: Vertical
   });
 }
 
-function serializeStay(listing: StayListing, context: VerticalContext) {
-  return {
-    ...listing,
-    heroImage: assetUrl(context.config, listing.heroImage),
-    gallery: listing.gallery.map((image) => assetUrl(context.config, image))
-  };
+function serializeStay(listing: StayListing) {
+  return listing;
 }

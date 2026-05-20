@@ -4,18 +4,21 @@ import {
   ecommerceCheckoutBodySchema,
   ecommerceProductsQuerySchema
 } from "@dummy-api/contracts";
+import type { Product, ProductCategory } from "@dummy-api/catalog";
 import type { AuthenticatedRequest } from "../../types";
-import { assetUrl } from "../../lib/assets";
 import { badRequest, notFound } from "../../lib/http-error";
 import { asBoolean, asNumber, asString, clampLimit } from "../../lib/query";
 import type { VerticalContext } from "../../lib/vertical";
-import { productCategories, products, type Product } from "./data";
 
 export async function registerEcommerceRoutes(app: FastifyInstance, context: VerticalContext): Promise<void> {
-  app.get("/v1/ecommerce/categories", async () => ({
-    data: productCategories,
-    meta: { count: productCategories.length }
-  }));
+  app.get("/v1/ecommerce/categories", async () => {
+    const categories = await context.store.listEcommerceCategories();
+
+    return {
+      data: categories,
+      meta: { count: categories.length }
+    };
+  });
 
   app.get("/v1/ecommerce/products", { schema: { querystring: ecommerceProductsQuerySchema } }, async (request) => {
     const query = request.query as Record<string, unknown>;
@@ -26,6 +29,10 @@ export async function registerEcommerceRoutes(app: FastifyInstance, context: Ver
     const color = asString(query.color)?.toLowerCase();
     const inStock = asBoolean(query.inStock);
     const limit = clampLimit(query.limit);
+    const [products, productCategories] = await Promise.all([
+      context.store.listEcommerceProducts(),
+      context.store.listEcommerceCategories()
+    ]);
 
     const filtered = products
       .filter((product) => {
@@ -33,7 +40,7 @@ export async function registerEcommerceRoutes(app: FastifyInstance, context: Ver
           return true;
         }
 
-        const productCategory = categoryForProduct(product);
+        const productCategory = categoryForProduct(product, productCategories);
         return product.categoryId.toLowerCase() === category || productCategory?.slug.toLowerCase() === category;
       })
       .filter((product) => {
@@ -49,20 +56,23 @@ export async function registerEcommerceRoutes(app: FastifyInstance, context: Ver
       .filter((product) => !color || product.colors.some((item) => item.toLowerCase() === color))
       .filter((product) => inStock === undefined || (inStock ? product.stock > 0 : product.stock === 0))
       .slice(0, limit)
-      .map((product) => serializeProduct(product, context));
+      .map((product) => serializeProduct(product, productCategories));
 
     return { data: filtered, meta: { count: filtered.length } };
   });
 
   app.get("/v1/ecommerce/products/:id", async (request) => {
     const { id } = request.params as { id: string };
-    const product = products.find((item) => item.id === id);
+    const [product, productCategories] = await Promise.all([
+      context.store.getEcommerceProduct(id),
+      context.store.listEcommerceCategories()
+    ]);
 
     if (!product) {
       throw notFound("Product");
     }
 
-    return { data: serializeProduct(product, context) };
+    return { data: serializeProduct(product, productCategories) };
   });
 
   app.post("/v1/ecommerce/carts", async (request) => {
@@ -94,7 +104,7 @@ export async function registerEcommerceRoutes(app: FastifyInstance, context: Ver
       const authRequest = request as AuthenticatedRequest;
       const { cartId } = request.params as { cartId: string };
       const body = request.body as { productId: string; quantity?: number };
-      const product = products.find((item) => item.id === body.productId);
+      const product = await context.store.getEcommerceProduct(body.productId);
       const quantity = body.quantity ?? 1;
 
       if (!product) {
@@ -135,6 +145,7 @@ export async function registerEcommerceRoutes(app: FastifyInstance, context: Ver
       throw badRequest("Cart must contain at least one item before checkout.");
     }
 
+    const products = await context.store.listEcommerceProducts();
     for (const item of cart.items) {
       const product = products.find((candidate) => candidate.id === item.itemId);
       if (!product) {
@@ -178,15 +189,13 @@ export async function registerEcommerceRoutes(app: FastifyInstance, context: Ver
   });
 }
 
-function serializeProduct(product: Product, context: VerticalContext) {
+function serializeProduct(product: Product, productCategories: ProductCategory[]) {
   return {
     ...product,
-    category: categoryForProduct(product),
-    heroImage: assetUrl(context.config, product.heroImage),
-    gallery: product.gallery.map((image) => assetUrl(context.config, image))
+    category: categoryForProduct(product, productCategories)
   };
 }
 
-function categoryForProduct(product: Product) {
+function categoryForProduct(product: Product, productCategories: ProductCategory[]) {
   return productCategories.find((category) => category.id === product.categoryId);
 }

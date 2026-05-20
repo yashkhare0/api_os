@@ -28,26 +28,16 @@ export function DashboardShell({
   return (
     <div className="min-h-screen bg-background text-foreground lg:grid lg:grid-cols-[280px_minmax(0,1fr)]">
       <aside className="hidden border-r bg-card/40 lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col">
-        <DashboardNav username={username} counts={counts} />
+        <DashboardNav username={username} counts={counts} summary={summary} />
       </aside>
 
       <main className="min-w-0 px-4 py-5 md:px-6 lg:px-8">
-        <header className="mb-6 flex flex-col gap-4 border-b pb-5">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex min-w-0 items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center">
-                <img src="/logos/icon-dark.svg" alt="" className="h-10 w-10 dark:hidden" />
-                <img src="/logos/icon-light.svg" alt="" className="hidden h-10 w-10 dark:block" />
-              </div>
-              <div className="min-w-0">
-                <div className="text-sm text-muted-foreground">DRIO Operations Console</div>
-                <h1 className="mt-1 truncate text-2xl font-semibold md:text-3xl">API STORE</h1>
-              </div>
+        <header className="mb-5 border-b pb-5 lg:hidden">
+          <div className="flex items-center justify-between gap-3 lg:justify-end">
+            <div className="min-w-0 flex-1">
+              <MobileDashboardNav counts={counts} />
             </div>
-            <div className="hidden shrink-0 items-center gap-2 lg:flex">
-              <DashboardCommandMenu summary={summary} />
-            </div>
-            <div className="flex shrink-0 items-center gap-2 lg:hidden">
+            <div className="flex shrink-0 items-center gap-2">
               <Badge variant="outline" className="hidden sm:inline-flex">
                 {username}
               </Badge>
@@ -60,7 +50,6 @@ export function DashboardShell({
               </form>
             </div>
           </div>
-          <MobileDashboardNav counts={counts} />
         </header>
         <div className="space-y-6">{children}</div>
       </main>

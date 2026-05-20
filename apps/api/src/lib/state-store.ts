@@ -1,5 +1,13 @@
 import { type CartRecord, type UsageEvent } from "@dummy-api/core";
 import type {
+  CarDealer,
+  CarListing,
+  Product,
+  ProductCategory,
+  PropertyListing,
+  StayListing
+} from "@dummy-api/catalog";
+import type {
   ApiAuthContext,
   BookingRecord,
   CheckoutRecord,
@@ -87,6 +95,17 @@ export type StateStore = {
   validateApiKey(input: ValidateApiKeyInput): Promise<ApiAuthContext | null>;
   resolveEndpoint(input: { method: string; path: string }): Promise<{ live: boolean }>;
   recordUsage(event: UsageEvent): Promise<void>;
+  listCarDealers(): Promise<CarDealer[]>;
+  getCarDealer(id: string): Promise<CarDealer | null>;
+  listCarListings(): Promise<CarListing[]>;
+  getCarListing(id: string): Promise<CarListing | null>;
+  listEcommerceCategories(): Promise<ProductCategory[]>;
+  listEcommerceProducts(): Promise<Product[]>;
+  getEcommerceProduct(id: string): Promise<Product | null>;
+  listRealEstateProperties(): Promise<PropertyListing[]>;
+  getRealEstateProperty(id: string): Promise<PropertyListing | null>;
+  listStayListings(): Promise<StayListing[]>;
+  getStayListing(id: string): Promise<StayListing | null>;
   createCart(input: CreateCartInput): Promise<CartRecord>;
   getCart(cartId: string, verticalSlug: string, apiKeyId: string): Promise<CartRecord | null>;
   addCartItem(input: AddCartItemInput): Promise<CartRecord>;
@@ -120,6 +139,50 @@ class ConvexHttpStateStore implements StateStore {
 
   async recordUsage(event: UsageEvent): Promise<void> {
     await this.post<void>("/usage/record", event, true);
+  }
+
+  async listCarDealers(): Promise<CarDealer[]> {
+    return this.listCatalog<CarDealer>("carDealers");
+  }
+
+  async getCarDealer(id: string): Promise<CarDealer | null> {
+    return this.getCatalog<CarDealer>("carDealers", id);
+  }
+
+  async listCarListings(): Promise<CarListing[]> {
+    return this.listCatalog<CarListing>("carListings");
+  }
+
+  async getCarListing(id: string): Promise<CarListing | null> {
+    return this.getCatalog<CarListing>("carListings", id);
+  }
+
+  async listEcommerceCategories(): Promise<ProductCategory[]> {
+    return this.listCatalog<ProductCategory>("ecommerceCategories");
+  }
+
+  async listEcommerceProducts(): Promise<Product[]> {
+    return this.listCatalog<Product>("ecommerceProducts");
+  }
+
+  async getEcommerceProduct(id: string): Promise<Product | null> {
+    return this.getCatalog<Product>("ecommerceProducts", id);
+  }
+
+  async listRealEstateProperties(): Promise<PropertyListing[]> {
+    return this.listCatalog<PropertyListing>("realEstateProperties");
+  }
+
+  async getRealEstateProperty(id: string): Promise<PropertyListing | null> {
+    return this.getCatalog<PropertyListing>("realEstateProperties", id);
+  }
+
+  async listStayListings(): Promise<StayListing[]> {
+    return this.listCatalog<StayListing>("stayListings");
+  }
+
+  async getStayListing(id: string): Promise<StayListing | null> {
+    return this.getCatalog<StayListing>("stayListings", id);
   }
 
   async createCart(input: CreateCartInput): Promise<CartRecord> {
@@ -164,6 +227,14 @@ class ConvexHttpStateStore implements StateStore {
 
   async getOrder(orderId: string, verticalSlug: string, apiKeyId: string): Promise<EcommerceOrderRecord | null> {
     return this.post<EcommerceOrderRecord | null>("/journeys/orders/get", { orderId, verticalSlug, apiKeyId }, true);
+  }
+
+  private async listCatalog<T>(collection: string): Promise<T[]> {
+    return this.post<T[]>("/catalog/list", { collection }, true);
+  }
+
+  private async getCatalog<T>(collection: string, externalId: string): Promise<T | null> {
+    return this.post<T | null>("/catalog/get", { collection, externalId }, true);
   }
 
   private async post<T>(path: string, body: unknown, internal: boolean): Promise<T> {

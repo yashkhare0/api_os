@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import type { Id } from "./_generated/dataModel";
-import { internalMutation, mutation, query } from "./_generated/server";
+import { internalMutation, mutation, query, type MutationCtx, type QueryCtx } from "./_generated/server";
 
 const CART_TTL_MS = 30 * 60 * 1000;
 const BOOKING_TTL_MS = 60 * 60 * 1000;
@@ -19,6 +19,25 @@ const cartItem = v.object({
   quantity: v.number(),
   unitPrice: v.number()
 });
+
+const catalogCollection = v.union(
+  v.literal("carDealers"),
+  v.literal("carListings"),
+  v.literal("ecommerceCategories"),
+  v.literal("ecommerceProducts"),
+  v.literal("realEstateProperties"),
+  v.literal("stayListings")
+);
+
+type CatalogCollection =
+  | "carDealers"
+  | "carListings"
+  | "ecommerceCategories"
+  | "ecommerceProducts"
+  | "realEstateProperties"
+  | "stayListings";
+
+type CatalogPayload = Record<string, unknown>;
 
 export const validateApiKey = mutation({
   args: {
@@ -411,6 +430,25 @@ export const syncRegistry = mutation({
         method: v.string(),
         path: v.string()
       })
+    ),
+    mediaAssets: v.optional(
+      v.array(
+        v.object({
+          assetKey: v.string(),
+          fileName: v.string(),
+          contentType: v.string()
+        })
+      )
+    ),
+    catalog: v.optional(
+      v.object({
+        carDealers: v.array(v.any()),
+        carListings: v.array(v.any()),
+        ecommerceCategories: v.array(v.any()),
+        ecommerceProducts: v.array(v.any()),
+        realEstateProperties: v.array(v.any()),
+        stayListings: v.array(v.any())
+      })
     )
   },
   handler: async (ctx, args) => {
@@ -462,10 +500,67 @@ export const syncRegistry = mutation({
       }
     }
 
+    const missingMediaKeys = await syncMediaAssetMetadata(ctx, args.mediaAssets ?? [], timestamp);
+    const catalogCounts = args.catalog ? await syncCatalogRecords(ctx, args.catalog, timestamp) : {};
+
     return {
       apps: args.apps.length,
-      endpoints: args.endpoints.length
+      endpoints: args.endpoints.length,
+      catalog: catalogCounts,
+      missingMediaKeys
     };
+  }
+});
+
+export const attachMediaStorage = mutation({
+  args: {
+    assetKey: v.string(),
+    storageId: v.id("_storage"),
+    byteLength: v.number()
+  },
+  handler: async (ctx, args) => {
+    const existing = await ctx.db
+      .query("mediaAssets")
+      .withIndex("by_asset_key", (q) => q.eq("assetKey", args.assetKey))
+      .unique();
+
+    if (!existing) {
+      throw new Error("Media asset was not found.");
+    }
+
+    if (existing.storageId) {
+      return serializeDoc(existing);
+    }
+
+    await ctx.db.patch(existing._id, {
+      storageId: args.storageId,
+      byteLength: args.byteLength,
+      updatedAt: Date.now()
+    });
+
+    const updated = await ctx.db.get(existing._id);
+    return updated ? serializeDoc(updated) : null;
+  }
+});
+
+export const listCatalogRecords = query({
+  args: {
+    collection: catalogCollection
+  },
+  handler: async (ctx, args) => {
+    const docs = await catalogDocs(ctx, args.collection);
+    return Promise.all(docs.map((doc) => hydrateCatalogPayload(ctx, doc.payload as CatalogPayload)));
+  }
+});
+
+export const getCatalogRecord = query({
+  args: {
+    collection: catalogCollection,
+    externalId: v.string()
+  },
+  handler: async (ctx, args) => {
+    const doc = await catalogDocByExternalId(ctx, args.collection, args.externalId);
+    return doc ? hydrateCatalogPayload(ctx, doc.payload as CatalogPayload) : null;
   }
 });
 
@@ -659,6 +754,329 @@ export const adminSummary = query({
     };
   }
 });
+
+async function syncMediaAssetMetadata(
+  ctx: MutationCtx,
+  mediaAssets: Array<{ assetKey: string; fileName: string; contentType: string }>,
+  timestamp: number
+): Promise<string[]> {
+  const missingMediaKeys: string[] = [];
+
+  for (const asset of mediaAssets) {
+    const existing = await ctx.db
+      .query("mediaAssets")
+      .withIndex("by_asset_key", (q) => q.eq("assetKey", asset.assetKey))
+      .unique();
+    const patch = {
+      verticalSlug: verticalSlugForAsset(asset.assetKey),
+      fileName: asset.fileName,
+      contentType: asset.contentType,
+      updatedAt: timestamp
+    };
+
+    if (existing) {
+      await ctx.db.patch(existing._id, patch);
+      if (!existing.storageId) {
+        missingMediaKeys.push(asset.assetKey);
+      }
+      continue;
+    }
+
+    await ctx.db.insert("mediaAssets", {
+      assetKey: asset.assetKey,
+      ...patch,
+      createdAt: timestamp
+    });
+    missingMediaKeys.push(asset.assetKey);
+  }
+
+  return missingMediaKeys;
+}
+
+async function syncCatalogRecords(
+  ctx: MutationCtx,
+  catalog: {
+    carDealers: unknown[];
+    carListings: unknown[];
+    ecommerceCategories: unknown[];
+    ecommerceProducts: unknown[];
+    realEstateProperties: unknown[];
+    stayListings: unknown[];
+  },
+  timestamp: number
+) {
+  await Promise.all([
+    ...catalog.carDealers.map((payload) => upsertCarDealer(ctx, payload, timestamp)),
+    ...catalog.carListings.map((payload) => upsertCarListing(ctx, payload, timestamp)),
+    ...catalog.ecommerceCategories.map((payload) => upsertEcommerceCategory(ctx, payload, timestamp)),
+    ...catalog.ecommerceProducts.map((payload) => upsertEcommerceProduct(ctx, payload, timestamp)),
+    ...catalog.realEstateProperties.map((payload) => upsertRealEstateProperty(ctx, payload, timestamp)),
+    ...catalog.stayListings.map((payload) => upsertStayListing(ctx, payload, timestamp))
+  ]);
+
+  return {
+    carDealers: catalog.carDealers.length,
+    carListings: catalog.carListings.length,
+    ecommerceCategories: catalog.ecommerceCategories.length,
+    ecommerceProducts: catalog.ecommerceProducts.length,
+    realEstateProperties: catalog.realEstateProperties.length,
+    stayListings: catalog.stayListings.length
+  };
+}
+
+async function upsertCarDealer(ctx: MutationCtx, payload: unknown, timestamp: number): Promise<void> {
+  const record = asCatalogPayload(payload);
+  const externalId = requiredString(record.id, "car dealer id");
+  const document = {
+    externalId,
+    city: requiredString(record.city, "car dealer city"),
+    state: requiredString(record.state, "car dealer state"),
+    payload: record,
+    updatedAt: timestamp
+  };
+  const existing = await ctx.db
+    .query("carDealers")
+    .withIndex("by_external_id", (q) => q.eq("externalId", externalId))
+    .unique();
+
+  if (existing) {
+    await ctx.db.patch(existing._id, document);
+    return;
+  }
+
+  await ctx.db.insert("carDealers", { ...document, createdAt: timestamp });
+}
+
+async function upsertCarListing(ctx: MutationCtx, payload: unknown, timestamp: number): Promise<void> {
+  const record = asCatalogPayload(payload);
+  const externalId = requiredString(record.id, "car listing id");
+  const document = {
+    externalId,
+    dealerId: requiredString(record.dealerId, "car listing dealerId"),
+    make: requiredString(record.make, "car listing make"),
+    model: requiredString(record.model, "car listing model"),
+    city: requiredString(record.city, "car listing city"),
+    bodyStyle: requiredString(record.bodyStyle, "car listing bodyStyle"),
+    fuelType: requiredString(record.fuelType, "car listing fuelType"),
+    condition: requiredString(record.condition, "car listing condition"),
+    price: requiredNumber(record.price, "car listing price"),
+    mileage: requiredNumber(record.mileage, "car listing mileage"),
+    payload: record,
+    updatedAt: timestamp
+  };
+  const existing = await ctx.db
+    .query("carListings")
+    .withIndex("by_external_id", (q) => q.eq("externalId", externalId))
+    .unique();
+
+  if (existing) {
+    await ctx.db.patch(existing._id, document);
+    return;
+  }
+
+  await ctx.db.insert("carListings", { ...document, createdAt: timestamp });
+}
+
+async function upsertEcommerceCategory(ctx: MutationCtx, payload: unknown, timestamp: number): Promise<void> {
+  const record = asCatalogPayload(payload);
+  const externalId = requiredString(record.id, "ecommerce category id");
+  const document = {
+    externalId,
+    slug: requiredString(record.slug, "ecommerce category slug"),
+    payload: record,
+    updatedAt: timestamp
+  };
+  const existing = await ctx.db
+    .query("ecommerceCategories")
+    .withIndex("by_external_id", (q) => q.eq("externalId", externalId))
+    .unique();
+
+  if (existing) {
+    await ctx.db.patch(existing._id, document);
+    return;
+  }
+
+  await ctx.db.insert("ecommerceCategories", { ...document, createdAt: timestamp });
+}
+
+async function upsertEcommerceProduct(ctx: MutationCtx, payload: unknown, timestamp: number): Promise<void> {
+  const record = asCatalogPayload(payload);
+  const externalId = requiredString(record.id, "ecommerce product id");
+  const document = {
+    externalId,
+    categoryId: requiredString(record.categoryId, "ecommerce product categoryId"),
+    price: requiredNumber(record.price, "ecommerce product price"),
+    stock: requiredNumber(record.stock, "ecommerce product stock"),
+    payload: record,
+    updatedAt: timestamp
+  };
+  const existing = await ctx.db
+    .query("ecommerceProducts")
+    .withIndex("by_external_id", (q) => q.eq("externalId", externalId))
+    .unique();
+
+  if (existing) {
+    await ctx.db.patch(existing._id, document);
+    return;
+  }
+
+  await ctx.db.insert("ecommerceProducts", { ...document, createdAt: timestamp });
+}
+
+async function upsertRealEstateProperty(ctx: MutationCtx, payload: unknown, timestamp: number): Promise<void> {
+  const record = asCatalogPayload(payload);
+  const externalId = requiredString(record.id, "real estate property id");
+  const document = {
+    externalId,
+    city: requiredString(record.city, "real estate property city"),
+    propertyType: requiredString(record.propertyType, "real estate property propertyType"),
+    price: requiredNumber(record.price, "real estate property price"),
+    bedrooms: requiredNumber(record.bedrooms, "real estate property bedrooms"),
+    bathrooms: requiredNumber(record.bathrooms, "real estate property bathrooms"),
+    payload: record,
+    updatedAt: timestamp
+  };
+  const existing = await ctx.db
+    .query("realEstateProperties")
+    .withIndex("by_external_id", (q) => q.eq("externalId", externalId))
+    .unique();
+
+  if (existing) {
+    await ctx.db.patch(existing._id, document);
+    return;
+  }
+
+  await ctx.db.insert("realEstateProperties", { ...document, createdAt: timestamp });
+}
+
+async function upsertStayListing(ctx: MutationCtx, payload: unknown, timestamp: number): Promise<void> {
+  const record = asCatalogPayload(payload);
+  const externalId = requiredString(record.id, "stay listing id");
+  const document = {
+    externalId,
+    city: requiredString(record.city, "stay listing city"),
+    maxGuests: requiredNumber(record.maxGuests, "stay listing maxGuests"),
+    nightlyRate: requiredNumber(record.nightlyRate, "stay listing nightlyRate"),
+    payload: record,
+    updatedAt: timestamp
+  };
+  const existing = await ctx.db
+    .query("stayListings")
+    .withIndex("by_external_id", (q) => q.eq("externalId", externalId))
+    .unique();
+
+  if (existing) {
+    await ctx.db.patch(existing._id, document);
+    return;
+  }
+
+  await ctx.db.insert("stayListings", { ...document, createdAt: timestamp });
+}
+
+async function catalogDocs(ctx: QueryCtx, collection: CatalogCollection) {
+  switch (collection) {
+    case "carDealers":
+      return ctx.db.query("carDealers").collect();
+    case "carListings":
+      return ctx.db.query("carListings").collect();
+    case "ecommerceCategories":
+      return ctx.db.query("ecommerceCategories").collect();
+    case "ecommerceProducts":
+      return ctx.db.query("ecommerceProducts").collect();
+    case "realEstateProperties":
+      return ctx.db.query("realEstateProperties").collect();
+    case "stayListings":
+      return ctx.db.query("stayListings").collect();
+  }
+}
+
+async function catalogDocByExternalId(ctx: QueryCtx, collection: CatalogCollection, externalId: string) {
+  switch (collection) {
+    case "carDealers":
+      return ctx.db.query("carDealers").withIndex("by_external_id", (q) => q.eq("externalId", externalId)).unique();
+    case "carListings":
+      return ctx.db.query("carListings").withIndex("by_external_id", (q) => q.eq("externalId", externalId)).unique();
+    case "ecommerceCategories":
+      return ctx.db
+        .query("ecommerceCategories")
+        .withIndex("by_external_id", (q) => q.eq("externalId", externalId))
+        .unique();
+    case "ecommerceProducts":
+      return ctx.db
+        .query("ecommerceProducts")
+        .withIndex("by_external_id", (q) => q.eq("externalId", externalId))
+        .unique();
+    case "realEstateProperties":
+      return ctx.db
+        .query("realEstateProperties")
+        .withIndex("by_external_id", (q) => q.eq("externalId", externalId))
+        .unique();
+    case "stayListings":
+      return ctx.db.query("stayListings").withIndex("by_external_id", (q) => q.eq("externalId", externalId)).unique();
+  }
+}
+
+async function hydrateCatalogPayload(ctx: QueryCtx, payload: CatalogPayload): Promise<CatalogPayload> {
+  const result = { ...payload };
+
+  if (typeof result.heroImage === "string") {
+    result.heroImage = await mediaUrl(ctx, result.heroImage);
+  }
+
+  if (Array.isArray(result.gallery)) {
+    result.gallery = await Promise.all(
+      result.gallery.map((assetKey) => (typeof assetKey === "string" ? mediaUrl(ctx, assetKey) : assetKey))
+    );
+  }
+
+  return result;
+}
+
+async function mediaUrl(ctx: QueryCtx, assetKey: string): Promise<string> {
+  const asset = await ctx.db
+    .query("mediaAssets")
+    .withIndex("by_asset_key", (q) => q.eq("assetKey", assetKey))
+    .unique();
+
+  if (!asset?.storageId) {
+    return assetKey;
+  }
+
+  return (await ctx.storage.getUrl(asset.storageId)) ?? assetKey;
+}
+
+function asCatalogPayload(payload: unknown): CatalogPayload {
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+    throw new Error("Catalog record payload must be an object.");
+  }
+
+  return payload as CatalogPayload;
+}
+
+function requiredString(value: unknown, field: string): string {
+  if (typeof value !== "string" || !value) {
+    throw new Error(`Missing ${field}.`);
+  }
+
+  return value;
+}
+
+function requiredNumber(value: unknown, field: string): number {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    throw new Error(`Missing ${field}.`);
+  }
+
+  return value;
+}
+
+function verticalSlugForAsset(assetKey: string): string {
+  const [, assetsSegment, verticalSlug] = assetKey.split("/");
+  if (assetsSegment !== "assets" || !verticalSlug) {
+    throw new Error(`Invalid media asset key: ${assetKey}`);
+  }
+
+  return verticalSlug;
+}
 
 function serializeApiKey(record: {
   _id: string;

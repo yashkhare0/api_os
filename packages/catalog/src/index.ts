@@ -1,5 +1,18 @@
 import type { VerticalMetadata } from "@dummy-api/core";
-import { endpointsForVertical } from "@dummy-api/contracts";
+import { endpointsForVertical, pokeApiPassthroughResources } from "@dummy-api/contracts";
+
+export * from "./data/cars";
+export * from "./data/ecommerce";
+export * from "./data/real-estate";
+export * from "./data/stays";
+export * from "./seed";
+
+const pokeApiAllowedRoutes = [
+  ...pokeApiPassthroughResources.flatMap((resource) =>
+    resource === "meta" ? [`GET /${resource}`] : [`GET /${resource}`, `GET /${resource}/{id or name}`]
+  ),
+  "GET /pokemon/{id or name}/encounters"
+];
 
 export const verticals: VerticalMetadata[] = [
   {
@@ -43,7 +56,10 @@ export const verticals: VerticalMetadata[] = [
     media: ["upstream sprite URLs"],
     upstream: {
       name: "PokeAPI",
-      baseUrl: "https://pokeapi.co/api/v2"
+      baseUrl: "https://pokeapi.co/api/v2",
+      documentationUrl: "https://pokeapi.co/docs/v2",
+      sourceUrl: "https://github.com/PokeAPI/pokeapi",
+      allowedRoutes: pokeApiAllowedRoutes
     }
   }
 ];

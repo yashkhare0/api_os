@@ -1,4 +1,6 @@
 import type { FastifyInstance } from "fastify";
+import { catalogSeed, mediaAssetSeeds, verticals, type CatalogSeed } from "@dummy-api/catalog";
+import { endpointContracts } from "@dummy-api/contracts";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { buildApp } from "../app";
 import type { ApiConfig } from "../lib/config";
@@ -60,7 +62,7 @@ describe("public API end to end", () => {
     expect(body.data[0]).toMatchObject({
       id: "car_electra_suv_01",
       dealer: { id: "dealer_seattle_greenline" },
-      heroImage: "http://api.test/assets/cars/electra-northstar.jpg"
+      heroImage: "http://blob.test/blobs/assets/cars/electra-northstar.jpg"
     });
     expect(body.data[0].gallery).toHaveLength(2);
     await waitFor(() =>
@@ -207,7 +209,7 @@ describe("public API end to end", () => {
     expect(productsResponse.statusCode).toBe(200);
     expect(productsResponse.json().data[0]).toMatchObject({
       id: "prod_noise_canceling_earbuds_01",
-      heroImage: "http://api.test/assets/ecommerce/electronics.jpg"
+      heroImage: "http://blob.test/blobs/assets/ecommerce/electronics.jpg"
     });
 
     const cartResponse = await app.inject({
@@ -267,6 +269,68 @@ describe("public API end to end", () => {
     });
   });
 
+  it("rejects DB-backed journey mutations for missing inventory and over-capacity stays", async () => {
+    const cartResponse = await app.inject({
+      method: "POST",
+      url: "/v1/ecommerce/carts",
+      headers: { "x-api-key": apiKey }
+    });
+    const cart = cartResponse.json().data as { id: string };
+
+    const missingProductResponse = await app.inject({
+      method: "POST",
+      url: `/v1/ecommerce/carts/${cart.id}/items`,
+      headers: {
+        "x-api-key": apiKey,
+        "content-type": "application/json"
+      },
+      payload: {
+        productId: "missing",
+        quantity: 1
+      }
+    });
+    expect(missingProductResponse.statusCode).toBe(400);
+    expect(missingProductResponse.json()).toMatchObject({
+      error: { code: "bad_request" }
+    });
+
+    const oversoldProductResponse = await app.inject({
+      method: "POST",
+      url: `/v1/ecommerce/carts/${cart.id}/items`,
+      headers: {
+        "x-api-key": apiKey,
+        "content-type": "application/json"
+      },
+      payload: {
+        productId: "prod_portable_mini_projector_01",
+        quantity: 12
+      }
+    });
+    expect(oversoldProductResponse.statusCode).toBe(400);
+    expect(oversoldProductResponse.json()).toMatchObject({
+      error: { code: "bad_request" }
+    });
+
+    const overCapacityStayResponse = await app.inject({
+      method: "POST",
+      url: "/v1/stays/reservations",
+      headers: {
+        "x-api-key": apiKey,
+        "content-type": "application/json"
+      },
+      payload: {
+        listingId: "stay_sedona_casita_01",
+        startDate: "2026-06-01T16:00:00.000Z",
+        endDate: "2026-06-03T10:00:00.000Z",
+        guests: 5
+      }
+    });
+    expect(overCapacityStayResponse.statusCode).toBe(400);
+    expect(overCapacityStayResponse.json()).toMatchObject({
+      error: { code: "bad_request" }
+    });
+  });
+
   it("completes booking journeys for real estate and stays", async () => {
     const propertiesResponse = await app.inject({
       method: "GET",
@@ -276,12 +340,12 @@ describe("public API end to end", () => {
     expect(propertiesResponse.statusCode).toBe(200);
     expect(propertiesResponse.json().data[0]).toMatchObject({
       id: "property_austin_bungalow_01",
-      heroImage: "http://api.test/assets/real-estate/zilker-bungalow.jpg"
+      heroImage: "http://blob.test/blobs/assets/real-estate/zilker-bungalow.jpg"
     });
     expect(propertiesResponse.json().data[0].gallery).toEqual([
-      "http://api.test/assets/real-estate/zilker-bungalow.jpg",
-      "http://api.test/assets/real-estate/zilker-bungalow-living.png",
-      "http://api.test/assets/real-estate/zilker-bungalow-yard.png"
+      "http://blob.test/blobs/assets/real-estate/zilker-bungalow.jpg",
+      "http://blob.test/blobs/assets/real-estate/zilker-bungalow-living.png",
+      "http://blob.test/blobs/assets/real-estate/zilker-bungalow-yard.png"
     ]);
 
     const listingsResponse = await app.inject({
@@ -292,7 +356,7 @@ describe("public API end to end", () => {
     expect(listingsResponse.statusCode).toBe(200);
     expect(listingsResponse.json().data[0]).toMatchObject({
       id: "stay_sedona_casita_01",
-      heroImage: "http://api.test/assets/stays/sedona-casita.jpg"
+      heroImage: "http://blob.test/blobs/assets/stays/sedona-casita.jpg"
     });
 
     const realEstateResponse = await app.inject({
@@ -359,7 +423,7 @@ describe("public API end to end", () => {
       meta: { count: 1 }
     });
     expect(response.json().data[0].gallery).toContain(
-      "http://api.test/assets/real-estate/highlands-townhome-rooftop.png"
+      "http://blob.test/blobs/assets/real-estate/highlands-townhome-rooftop.png"
     );
 
     const detailResponse = await app.inject({
@@ -375,9 +439,9 @@ describe("public API end to end", () => {
       coordinates: { latitude: 41.8864, longitude: -87.6491 }
     });
     expect(detailResponse.json().data.gallery).toEqual([
-      "http://api.test/assets/real-estate/west-loop-loft.jpg",
-      "http://api.test/assets/real-estate/west-loop-loft-kitchen.png",
-      "http://api.test/assets/real-estate/west-loop-loft-bedroom.png"
+      "http://blob.test/blobs/assets/real-estate/west-loop-loft.jpg",
+      "http://blob.test/blobs/assets/real-estate/west-loop-loft-kitchen.png",
+      "http://blob.test/blobs/assets/real-estate/west-loop-loft-bedroom.png"
     ]);
 
     const assetResponse = await app.inject({
@@ -386,6 +450,91 @@ describe("public API end to end", () => {
     });
     expect(assetResponse.statusCode).toBe(200);
     expect(assetResponse.headers["content-type"]).toContain("image/png");
+  });
+
+  it("serves vertical catalog changes synced through the Convex registry boundary", async () => {
+    const mutatedCatalog: CatalogSeed = {
+      carDealers: catalogSeed.carDealers.map((dealer) =>
+        dealer.id === "dealer_seattle_greenline" ? { ...dealer, name: "DB Seed Motors", city: "Tacoma" } : dealer
+      ),
+      carListings: catalogSeed.carListings.map((listing) =>
+        listing.id === "car_electra_suv_01" ? { ...listing, price: 64001, mileage: 321 } : listing
+      ),
+      ecommerceCategories: catalogSeed.ecommerceCategories,
+      ecommerceProducts: catalogSeed.ecommerceProducts.map((product) =>
+        product.id === "prod_noise_canceling_earbuds_01"
+          ? { ...product, name: "DB-backed earbuds", price: 177, stock: 7 }
+          : product
+      ),
+      realEstateProperties: catalogSeed.realEstateProperties.map((property) =>
+        property.id === "property_austin_bungalow_01"
+          ? { ...property, price: 786123, neighborhood: "Synced District" }
+          : property
+      ),
+      stayListings: catalogSeed.stayListings.map((listing) =>
+        listing.id === "stay_sedona_casita_01" ? { ...listing, nightlyRate: 333, maxGuests: 3 } : listing
+      )
+    };
+
+    try {
+      await syncRegistry(convex, mutatedCatalog);
+
+      const carResponse = await app.inject({
+        method: "GET",
+        url: "/v1/cars/listings/car_electra_suv_01",
+        headers: { "x-api-key": apiKey }
+      });
+      expect(carResponse.statusCode).toBe(200);
+      expect(carResponse.json().data).toMatchObject({
+        id: "car_electra_suv_01",
+        price: 64001,
+        mileage: 321,
+        dealer: {
+          name: "DB Seed Motors",
+          city: "Tacoma"
+        }
+      });
+
+      const productResponse = await app.inject({
+        method: "GET",
+        url: "/v1/ecommerce/products/prod_noise_canceling_earbuds_01",
+        headers: { "x-api-key": apiKey }
+      });
+      expect(productResponse.statusCode).toBe(200);
+      expect(productResponse.json().data).toMatchObject({
+        id: "prod_noise_canceling_earbuds_01",
+        name: "DB-backed earbuds",
+        price: 177,
+        stock: 7,
+        category: { slug: "electronics" }
+      });
+
+      const propertyResponse = await app.inject({
+        method: "GET",
+        url: "/v1/real-estate/properties/property_austin_bungalow_01",
+        headers: { "x-api-key": apiKey }
+      });
+      expect(propertyResponse.statusCode).toBe(200);
+      expect(propertyResponse.json().data).toMatchObject({
+        id: "property_austin_bungalow_01",
+        price: 786123,
+        neighborhood: "Synced District"
+      });
+
+      const stayResponse = await app.inject({
+        method: "GET",
+        url: "/v1/stays/listings/stay_sedona_casita_01",
+        headers: { "x-api-key": apiKey }
+      });
+      expect(stayResponse.statusCode).toBe(200);
+      expect(stayResponse.json().data).toMatchObject({
+        id: "stay_sedona_casita_01",
+        nightlyRate: 333,
+        maxGuests: 3
+      });
+    } finally {
+      await syncRegistry(convex);
+    }
   });
 
   it("rejects invalid real estate requests", async () => {
@@ -451,7 +600,24 @@ describe("public API end to end", () => {
     });
   });
 
-  it("passes through the allowlisted Pokemon API", async () => {
+  it("passes through the allowlisted Pokemon list API with safe pagination", async () => {
+    const response = await app.inject({
+      method: "GET",
+      url: "/v1/pokemon/pokemon?limit=1&offset=1",
+      headers: { "x-api-key": apiKey }
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toMatchObject({
+      data: {
+        count: 2,
+        results: [{ name: "ivysaur" }]
+      }
+    });
+    expect(response.headers["cache-control"]).toBe("public, s-maxage=300, stale-while-revalidate=3600");
+  });
+
+  it("passes through the allowlisted Pokemon detail API", async () => {
     const response = await app.inject({
       method: "GET",
       url: "/v1/pokemon/pokemon/bulbasaur",
@@ -466,6 +632,84 @@ describe("public API end to end", () => {
       }
     });
     expect(response.headers["cache-control"]).toBe("public, s-maxage=300, stale-while-revalidate=3600");
+  });
+
+  it("passes through additional PokeAPI resources exposed in OpenAPI", async () => {
+    const abilityListResponse = await app.inject({
+      method: "GET",
+      url: "/v1/pokemon/ability?limit=1",
+      headers: { "x-api-key": apiKey }
+    });
+    expect(abilityListResponse.statusCode).toBe(200);
+    expect(abilityListResponse.json()).toMatchObject({
+      data: {
+        results: [{ name: "stench" }]
+      }
+    });
+
+    const abilityDetailResponse = await app.inject({
+      method: "GET",
+      url: "/v1/pokemon/ability/stench",
+      headers: { "x-api-key": apiKey }
+    });
+    expect(abilityDetailResponse.statusCode).toBe(200);
+    expect(abilityDetailResponse.json()).toMatchObject({
+      data: {
+        id: 1,
+        name: "stench"
+      }
+    });
+
+    const encountersResponse = await app.inject({
+      method: "GET",
+      url: "/v1/pokemon/pokemon/bulbasaur/encounters",
+      headers: { "x-api-key": apiKey }
+    });
+    expect(encountersResponse.statusCode).toBe(200);
+    expect(encountersResponse.json()).toMatchObject({
+      data: [{ location_area: { name: "cerulean-city-area" } }]
+    });
+
+    const metaResponse = await app.inject({
+      method: "GET",
+      url: "/v1/pokemon/meta",
+      headers: { "x-api-key": apiKey }
+    });
+    expect(metaResponse.statusCode).toBe(200);
+    expect(metaResponse.json()).toMatchObject({
+      data: {
+        hash: "test-pokeapi-harness"
+      }
+    });
+  });
+
+  it("validates Pokemon passthrough path parameters", async () => {
+    const response = await app.inject({
+      method: "GET",
+      url: "/v1/pokemon/pokemon/bulbasaur!",
+      headers: { "x-api-key": apiKey }
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json()).toMatchObject({
+      error: { code: "validation_error" }
+    });
+  });
+
+  it("normalizes Pokemon upstream failures", async () => {
+    const response = await app.inject({
+      method: "GET",
+      url: "/v1/pokemon/pokemon/missingno",
+      headers: { "x-api-key": apiKey }
+    });
+
+    expect(response.statusCode).toBe(502);
+    expect(response.json()).toMatchObject({
+      error: {
+        code: "upstream_error",
+        details: { upstreamStatusCode: 404 }
+      }
+    });
   });
 
   it("blocks disabled endpoints from the platform registry", async () => {
@@ -518,4 +762,33 @@ async function waitFor(assertion: () => boolean): Promise<void> {
   }
 
   expect(assertion()).toBe(true);
+}
+
+async function syncRegistry(convex: ConvexHttpHarness, catalog: CatalogSeed = catalogSeed): Promise<void> {
+  const response = await fetch(`${convex.url}/admin/registry/sync`, {
+    method: "POST",
+    headers: {
+      authorization: `Bearer ${internalSecret}`,
+      "content-type": "application/json"
+    },
+    body: JSON.stringify({
+      apps: verticals.map((vertical) => ({
+        slug: vertical.slug,
+        name: vertical.name,
+        description: vertical.description,
+        journey: vertical.journey,
+        media: vertical.media
+      })),
+      endpoints: endpointContracts.map((contract) => ({
+        contractId: contract.id,
+        appSlug: contract.verticalSlug,
+        method: contract.method,
+        path: contract.path
+      })),
+      mediaAssets: mediaAssetSeeds,
+      catalog
+    })
+  });
+
+  expect(response.status).toBe(200);
 }

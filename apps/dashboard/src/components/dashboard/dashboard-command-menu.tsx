@@ -28,6 +28,7 @@ import {
   TooltipTrigger
 } from "@/components/ui/tooltip";
 import type { AdminSummary, ApiEndpoint } from "@/lib/admin-api";
+import { cn } from "@/lib/utils";
 import { endpointHref } from "./format";
 
 type CommandItemValue = {
@@ -37,7 +38,13 @@ type CommandItemValue = {
   shortcut?: string;
 };
 
-export function DashboardCommandMenu({ summary }: { summary?: AdminSummary | undefined }) {
+export function DashboardCommandMenu({
+  summary,
+  className
+}: {
+  summary?: AdminSummary | undefined;
+  className?: string | undefined;
+}) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const endpointItems = useMemo(() => buildEndpointItems(summary?.registry.endpoints ?? []), [summary]);
@@ -63,7 +70,7 @@ export function DashboardCommandMenu({ summary }: { summary?: AdminSummary | und
     <>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button type="button" variant="outline" onClick={() => setOpen(true)} className="gap-2">
+          <Button type="button" variant="outline" onClick={() => setOpen(true)} className={cn("gap-2", className)}>
             <Search className="h-4 w-4" />
             <span className="hidden sm:inline">Command</span>
             <span className="hidden rounded border bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground md:inline">

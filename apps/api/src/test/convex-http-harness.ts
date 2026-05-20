@@ -9,7 +9,7 @@ import {
   type CartRecord,
   type UsageEvent
 } from "@dummy-api/core";
-import { verticals } from "@dummy-api/catalog";
+import { catalogSeed, mediaAssetSeeds, verticals } from "@dummy-api/catalog";
 import type {
   BookingRecord,
   CheckoutRecord,
@@ -19,6 +19,8 @@ import type {
 
 type HarnessState = {
   apiKeys: Map<string, ApiKeyRecord>;
+  catalog: HarnessCatalog;
+  mediaAssets: Map<string, HarnessMediaAsset>;
   carts: Map<string, CartRecord>;
   bookings: Map<string, BookingRecord>;
   checkouts: CheckoutRecord[];
@@ -33,6 +35,24 @@ type HarnessState = {
 };
 
 type HarnessStatus = "active" | "disabled";
+
+type HarnessCatalog = {
+  carDealers: Map<string, Record<string, unknown>>;
+  carListings: Map<string, Record<string, unknown>>;
+  ecommerceCategories: Map<string, Record<string, unknown>>;
+  ecommerceProducts: Map<string, Record<string, unknown>>;
+  realEstateProperties: Map<string, Record<string, unknown>>;
+  stayListings: Map<string, Record<string, unknown>>;
+};
+
+type HarnessCatalogCollection = keyof HarnessCatalog;
+
+type HarnessMediaAsset = {
+  assetKey: string;
+  fileName: string;
+  contentType: string;
+  url: string;
+};
 
 type HarnessApp = {
   id: string;
@@ -92,6 +112,16 @@ export async function startConvexHttpHarness(options: {
   };
   const state: HarnessState = {
     apiKeys: new Map([[initialApiKey.id, initialApiKey]]),
+    catalog: seedCatalog(),
+    mediaAssets: new Map(
+      mediaAssetSeeds.map((asset) => [
+        asset.assetKey,
+        {
+          ...asset,
+          url: blobUrl(asset.assetKey)
+        }
+      ])
+    ),
     carts: new Map(),
     bookings: new Map(),
     checkouts: [],
@@ -183,6 +213,23 @@ export async function startConvexHttpHarness(options: {
           });
           return;
         }
+        case "/catalog/list": {
+          const collection = String(body.collection) as HarnessCatalogCollection;
+          sendJson(response, 200, {
+            data: Array.from((state.catalog[collection] ?? new Map()).values()).map((payload) =>
+              hydrateCatalogPayload(state, payload)
+            )
+          });
+          return;
+        }
+        case "/catalog/get": {
+          const collection = String(body.collection) as HarnessCatalogCollection;
+          const payload = state.catalog[collection]?.get(String(body.externalId));
+          sendJson(response, 200, {
+            data: payload ? hydrateCatalogPayload(state, payload) : null
+          });
+          return;
+        }
         case "/admin/summary": {
           sendJson(response, 200, {
             data: {
@@ -211,6 +258,7 @@ export async function startConvexHttpHarness(options: {
           const now = Date.now();
           const apps = Array.isArray(body.apps) ? body.apps : [];
           const endpoints = Array.isArray(body.endpoints) ? body.endpoints : [];
+          const mediaAssets = Array.isArray(body.mediaAssets) ? body.mediaAssets : [];
 
           for (const app of apps) {
             const input = app as {
@@ -255,7 +303,34 @@ export async function startConvexHttpHarness(options: {
             state.endpointStatuses.set(key, existing?.status ?? "active");
           }
 
-          sendJson(response, 200, { data: { apps: apps.length, endpoints: endpoints.length } });
+          for (const mediaAsset of mediaAssets) {
+            const input = mediaAsset as { assetKey?: unknown; fileName?: unknown; contentType?: unknown };
+            const assetKey = String(input.assetKey);
+            state.mediaAssets.set(assetKey, {
+              assetKey,
+              fileName: String(input.fileName),
+              contentType: String(input.contentType),
+              url: blobUrl(assetKey)
+            });
+          }
+
+          syncHarnessCatalog(state, body.catalog);
+
+          sendJson(response, 200, {
+            data: { apps: apps.length, endpoints: endpoints.length, missingMediaKeys: [] }
+          });
+          return;
+        }
+        case "/admin/media/upload": {
+          const assetKey = String(body.assetKey);
+          const existing = state.mediaAssets.get(assetKey);
+          state.mediaAssets.set(assetKey, {
+            assetKey,
+            fileName: existing?.fileName ?? assetKey.split("/").at(-1) ?? assetKey,
+            contentType: existing?.contentType ?? String(body.contentType ?? "application/octet-stream"),
+            url: existing?.url ?? blobUrl(assetKey)
+          });
+          sendJson(response, 200, { data: state.mediaAssets.get(assetKey) });
           return;
         }
         case "/admin/api-keys": {
@@ -555,6 +630,64 @@ export async function startConvexHttpHarness(options: {
 
 function signature(method: string, path: string): string {
   return `${method} ${path}`;
+}
+
+function seedCatalog(): HarnessCatalog {
+  return {
+    carDealers: mapById(catalogSeed.carDealers),
+    carListings: mapById(catalogSeed.carListings),
+    ecommerceCategories: mapById(catalogSeed.ecommerceCategories),
+    ecommerceProducts: mapById(catalogSeed.ecommerceProducts),
+    realEstateProperties: mapById(catalogSeed.realEstateProperties),
+    stayListings: mapById(catalogSeed.stayListings)
+  };
+}
+
+function syncHarnessCatalog(state: HarnessState, catalog: unknown): void {
+  if (!catalog || typeof catalog !== "object" || Array.isArray(catalog)) {
+    return;
+  }
+
+  const input = catalog as Partial<Record<HarnessCatalogCollection, unknown>>;
+  for (const collection of Object.keys(state.catalog) as HarnessCatalogCollection[]) {
+    const records = input[collection];
+    if (Array.isArray(records)) {
+      state.catalog[collection] = mapById(records);
+    }
+  }
+}
+
+function mapById(records: unknown[]): Map<string, Record<string, unknown>> {
+  return new Map(
+    records.map((record) => {
+      if (!record || typeof record !== "object" || Array.isArray(record)) {
+        throw new Error("Catalog seed record must be an object.");
+      }
+
+      const payload = record as Record<string, unknown>;
+      return [String(payload.id), payload];
+    })
+  );
+}
+
+function hydrateCatalogPayload(state: HarnessState, payload: Record<string, unknown>): Record<string, unknown> {
+  const result = { ...payload };
+
+  if (typeof result.heroImage === "string") {
+    result.heroImage = state.mediaAssets.get(result.heroImage)?.url ?? result.heroImage;
+  }
+
+  if (Array.isArray(result.gallery)) {
+    result.gallery = result.gallery.map((assetKey) =>
+      typeof assetKey === "string" ? state.mediaAssets.get(assetKey)?.url ?? assetKey : assetKey
+    );
+  }
+
+  return result;
+}
+
+function blobUrl(assetKey: string): string {
+  return `http://blob.test/blobs/${assetKey.replace(/^\/+/, "")}`;
 }
 
 function normalizeCreditRating(value: unknown): "excellent" | "good" | "fair" | "building" {

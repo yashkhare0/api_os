@@ -87,7 +87,13 @@ function baseDocument(vertical: VerticalMetadata, baseUrl: string): Record<strin
       ? {
           externalDocs: {
             description: `${vertical.upstream.name} upstream documentation`,
-            url: vertical.upstream.baseUrl
+            url: vertical.upstream.documentationUrl ?? vertical.upstream.baseUrl
+          },
+          "x-dummy-api-upstream": {
+            name: vertical.upstream.name,
+            baseUrl: vertical.upstream.baseUrl,
+            ...(vertical.upstream.sourceUrl ? { sourceUrl: vertical.upstream.sourceUrl } : {}),
+            ...(vertical.upstream.allowedRoutes ? { allowedRoutes: vertical.upstream.allowedRoutes } : {})
           }
         }
       : {})
@@ -95,7 +101,7 @@ function baseDocument(vertical: VerticalMetadata, baseUrl: string): Record<strin
 }
 
 function operationForContract(contract: ApiEndpointContract, vertical: VerticalMetadata): Record<string, unknown> {
-  const parameters = [...pathParameters(contract.path), ...queryParameters(contract.querySchema)];
+  const parameters = [...pathParameters(contract.path, contract.paramsSchema), ...queryParameters(contract.querySchema)];
 
   return {
     operationId: operationId(contract.id),
@@ -127,20 +133,32 @@ function operationForContract(contract: ApiEndpointContract, vertical: VerticalM
       },
       "400": errorResponse("Invalid request."),
       "401": errorResponse("Missing or invalid API key."),
-      "404": errorResponse("Resource not found.")
+      "404": errorResponse("Resource not found."),
+      ...(vertical.upstream ? { "502": errorResponse("Upstream API failed or timed out.") } : {})
     },
     "x-dummy-api-contract-id": contract.id,
-    "x-dummy-api-auth-required": contract.authRequired
+    "x-dummy-api-auth-required": contract.authRequired,
+    ...(vertical.upstream
+      ? {
+          "x-dummy-api-upstream-name": vertical.upstream.name
+        }
+      : {})
   };
 }
 
-function pathParameters(path: string): OpenApiParameter[] {
-  return pathParamNames(path).map((name) => ({
-    name,
-    in: "path",
-    required: true,
-    schema: { type: "string" }
-  }));
+function pathParameters(path: string, schema: JsonSchema | undefined): OpenApiParameter[] {
+  const properties = schemaProperties(schema);
+
+  return pathParamNames(path).map((name) => {
+    const parameterSchema = schemaObject(properties[name]);
+
+    return {
+      name,
+      in: "path",
+      required: true,
+      schema: Object.keys(parameterSchema).length > 0 ? parameterSchema : { type: "string" }
+    };
+  });
 }
 
 function queryParameters(schema: JsonSchema | undefined): OpenApiParameter[] {

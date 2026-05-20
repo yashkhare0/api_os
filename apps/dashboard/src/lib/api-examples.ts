@@ -92,7 +92,7 @@ function queryFieldsForContract(contractId: string, fields: SchemaField[]): Sche
     "ecommerce.products.list": ["category", "q", "limit"],
     "real-estate.properties.list": ["propertyType", "minBedrooms"],
     "stays.listings.list": ["city", "guests"],
-    "pokemon.pokemon.list": ["limit"]
+    "pokemon.pokemon.list": ["limit", "offset"]
   };
   const preferred = preferredByContract[contractId];
 
@@ -133,6 +133,10 @@ function sampleValue(name: string, type: string, enumValues?: Array<string | num
 
   if (lowerName === "name") {
     return "bulbasaur";
+  }
+
+  if (lowerName === "idorname") {
+    return 1;
   }
 
   if (type === "boolean") {

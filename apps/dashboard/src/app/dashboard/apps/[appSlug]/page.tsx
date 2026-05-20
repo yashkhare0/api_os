@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Activity, Braces, ChevronRight, ImageIcon, Plug, Power, Route } from "lucide-react";
+import { Activity, Braces, ChevronRight, ImageIcon, Plug, Power } from "lucide-react";
 import { Alert } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -71,7 +71,6 @@ export default async function AppDetailPage({
       {preview ? (
         <VerticalExplorer
           preview={preview}
-          appStatus={app.status}
           liveEndpoints={liveEndpoints}
           endpointCount={endpoints.length}
           responseCount={responses.length}
@@ -167,7 +166,6 @@ export default async function AppDetailPage({
 
 function VerticalExplorer({
   preview,
-  appStatus,
   liveEndpoints,
   endpointCount,
   responseCount,
@@ -175,18 +173,26 @@ function VerticalExplorer({
   p95Ms
 }: {
   preview: VerticalPreview;
-  appStatus: string;
   liveEndpoints: number;
   endpointCount: number;
   responseCount: number;
   requests: number;
   p95Ms: number;
 }) {
+  const primaryMedia = preview.media[0];
+  const secondaryMedia = preview.media.slice(1);
+  const registryStats = [
+    { label: "Live APIs", value: `${liveEndpoints}/${endpointCount}` },
+    { label: "Samples", value: String(responseCount) },
+    { label: "Requests", value: String(requests) },
+    { label: "P95 latency", value: `${p95Ms}ms` }
+  ];
+
   return (
-    <section className="grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(340px,0.8fr)]">
+    <section className="space-y-4">
       <Card className="overflow-hidden">
         <CardContent className="p-0">
-          <div className="grid gap-0 lg:grid-cols-[minmax(0,1fr)_280px]">
+          <div className="grid gap-0 lg:grid-cols-[minmax(0,1fr)_300px]">
             <div className="space-y-5 p-5">
               <div>
                 <div className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
@@ -195,6 +201,15 @@ function VerticalExplorer({
                 <h3 className="max-w-2xl text-2xl font-semibold leading-tight">{preview.title}</h3>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">{preview.summary}</p>
               </div>
+
+              <dl className="grid gap-3 border-y py-4 sm:grid-cols-2 xl:grid-cols-4">
+                {registryStats.map((stat) => (
+                  <div key={stat.label}>
+                    <dt className="text-xs text-muted-foreground">{stat.label}</dt>
+                    <dd className="mt-1 font-mono text-sm font-semibold">{stat.value}</dd>
+                  </div>
+                ))}
+              </dl>
 
               <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
                 {preview.proof.map((item) => (
@@ -215,73 +230,51 @@ function VerticalExplorer({
               </div>
             </div>
 
-            <div className="border-t bg-muted/25 p-4 lg:border-l lg:border-t-0">
-              <div className="mb-3 flex items-center gap-2 text-sm font-medium">
-                <ImageIcon className="h-4 w-4" />
-                Media proof
+            {primaryMedia ? (
+              <div className="border-t bg-muted/25 p-4 lg:border-l lg:border-t-0">
+                <div className="mb-3 flex items-center gap-2 text-sm font-medium">
+                  <ImageIcon className="h-4 w-4" />
+                  Media proof
+                </div>
+                <figure className="overflow-hidden rounded-md border bg-background">
+                  <img src={primaryMedia.src} alt={primaryMedia.label} className="aspect-[16/10] w-full object-cover" />
+                  <figcaption className="flex items-center justify-between gap-3 px-3 py-2 text-xs">
+                    <span className="truncate font-medium">{primaryMedia.label}</span>
+                    <span className="shrink-0 text-muted-foreground">{primaryMedia.meta}</span>
+                  </figcaption>
+                </figure>
+                {secondaryMedia.length > 0 ? (
+                  <div className="mt-3 divide-y rounded-md border bg-background text-xs">
+                    {secondaryMedia.map((item) => (
+                      <div key={item.src} className="flex items-center justify-between gap-3 px-3 py-2">
+                        <span className="truncate font-medium">{item.label}</span>
+                        <span className="shrink-0 text-muted-foreground">{item.meta}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
               </div>
-              <div className="grid gap-3">
-                {preview.media.map((item) => (
-                  <figure key={item.src} className="overflow-hidden rounded-md border bg-background">
-                    <img src={item.src} alt={item.label} className="aspect-[16/10] w-full object-cover" />
-                    <figcaption className="flex items-center justify-between gap-3 px-3 py-2 text-xs">
-                      <span className="truncate font-medium">{item.label}</span>
-                      <span className="shrink-0 text-muted-foreground">{item.meta}</span>
-                    </figcaption>
-                  </figure>
-                ))}
-              </div>
-            </div>
+            ) : null}
           </div>
         </CardContent>
       </Card>
 
-      <div className="space-y-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>Operational state</CardTitle>
-            <CardDescription>What this app looks like in the registry right now.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <StateLine icon={<Plug className="h-4 w-4" />} label="Live APIs" value={`${liveEndpoints}/${endpointCount}`} />
-            <StateLine icon={<Braces className="h-4 w-4" />} label="Saved samples" value={String(responseCount)} />
-            <StateLine icon={<Activity className="h-4 w-4" />} label="Requests" value={String(requests)} />
-            <StateLine icon={<Power className="h-4 w-4" />} label="P95 latency" value={`${p95Ms}ms`} />
-            <StateLine icon={<Route className="h-4 w-4" />} label="App status" value={appStatus} />
-          </CardContent>
-        </Card>
-      </div>
-
-      <section className="space-y-3 xl:col-span-2">
-        <SectionHeader title="Representative records" description="A quick look at the data shape and generated media behind the API." />
-        <div className="grid gap-3 md:grid-cols-3">
+      <section className="space-y-3">
+        <SectionHeader title="Representative records" description="Representative response shapes and stable media." />
+        <div className="grid gap-2">
           {preview.records.map((record) => (
-            <article key={record.title} className="overflow-hidden rounded-md border bg-card">
-              <img src={record.image} alt={record.title} className="aspect-[16/9] w-full object-cover" />
-              <div className="space-y-2 p-3">
-                <div>
-                  <h4 className="line-clamp-1 text-sm font-semibold">{record.title}</h4>
-                  <p className="mt-1 line-clamp-2 text-xs leading-5 text-muted-foreground">{record.description}</p>
-                </div>
-                <div className="truncate font-mono text-xs text-muted-foreground">{record.meta}</div>
+            <article key={record.title} className="grid overflow-hidden rounded-md border bg-card sm:grid-cols-[132px_minmax(0,1fr)]">
+              <img src={record.image} alt={record.title} className="aspect-[16/9] h-full w-full object-cover sm:aspect-auto" />
+              <div className="min-w-0 p-3">
+                <h4 className="truncate text-sm font-semibold">{record.title}</h4>
+                <p className="mt-1 line-clamp-1 text-xs leading-5 text-muted-foreground">{record.description}</p>
+                <div className="mt-2 truncate font-mono text-xs text-muted-foreground">{record.meta}</div>
               </div>
             </article>
           ))}
         </div>
       </section>
     </section>
-  );
-}
-
-function StateLine({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between gap-4 rounded-md border bg-background px-3 py-2">
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        {icon}
-        {label}
-      </div>
-      <div className="font-mono text-sm font-medium">{value}</div>
-    </div>
   );
 }
 

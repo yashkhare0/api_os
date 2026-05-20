@@ -24,6 +24,9 @@ export type VerticalMetadata = {
   upstream?: {
     name: string;
     baseUrl: string;
+    documentationUrl?: string;
+    sourceUrl?: string;
+    allowedRoutes?: string[];
   };
 };
 

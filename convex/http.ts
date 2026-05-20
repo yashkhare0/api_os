@@ -1,6 +1,7 @@
 import { httpAction } from "./_generated/server";
 import { httpRouter } from "convex/server";
 import { api } from "./_generated/api";
+import type { Id } from "./_generated/dataModel";
 
 const http = httpRouter();
 
@@ -138,10 +139,53 @@ http.route({
 });
 
 http.route({
+  path: "/catalog/list",
+  method: "POST",
+  handler: internalHttpAction(async (ctx, request) => {
+    const body = await request.json();
+    const data = await ctx.runQuery(api.state.listCatalogRecords, {
+      collection: body.collection
+    });
+    return json({ data });
+  })
+});
+
+http.route({
+  path: "/catalog/get",
+  method: "POST",
+  handler: internalHttpAction(async (ctx, request) => {
+    const body = await request.json();
+    const data = await ctx.runQuery(api.state.getCatalogRecord, {
+      collection: body.collection,
+      externalId: String(body.externalId)
+    });
+    return json({ data });
+  })
+});
+
+http.route({
   path: "/admin/summary",
   method: "GET",
   handler: internalHttpAction(async (ctx, _request) => {
     const data = await ctx.runQuery(api.state.adminSummary);
+    return json({ data });
+  })
+});
+
+http.route({
+  path: "/admin/media/upload",
+  method: "POST",
+  handler: internalHttpAction(async (ctx, request) => {
+    const body = await request.json();
+    const assetKey = String(body.assetKey);
+    const contentType = String(body.contentType ?? "application/octet-stream");
+    const bytes = decodeBase64(String(body.contentBase64 ?? ""));
+    const storageId = await ctx.storage.store(new Blob([bytes], { type: contentType }));
+    const data = await ctx.runMutation(api.state.attachMediaStorage, {
+      assetKey,
+      storageId: storageId as Id<"_storage">,
+      byteLength: bytes.byteLength
+    });
     return json({ data });
   })
 });
@@ -270,6 +314,16 @@ function json(body: unknown, status = 200): Response {
     status,
     headers: { "content-type": "application/json" }
   });
+}
+
+function decodeBase64(value: string): Uint8Array {
+  const binary = atob(value);
+  const bytes = new Uint8Array(binary.length);
+  for (let index = 0; index < binary.length; index += 1) {
+    bytes[index] = binary.charCodeAt(index);
+  }
+
+  return bytes;
 }
 
 function generateApiKey(): string {

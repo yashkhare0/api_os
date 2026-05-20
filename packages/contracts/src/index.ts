@@ -10,6 +10,7 @@ export type ApiEndpointContract = {
   method: HttpMethod;
   path: string;
   authRequired: true;
+  paramsSchema?: JsonSchema;
   querySchema?: JsonSchema;
   bodySchema?: JsonSchema;
 };
@@ -120,10 +121,107 @@ export const stayListingsQuerySchema = {
 export const pokemonListQuerySchema = {
   type: "object",
   properties: {
-    limit: { type: "integer", minimum: 1, maximum: 50 }
+    limit: { type: "integer", minimum: 1, maximum: 50 },
+    offset: { type: "integer", minimum: 0, maximum: 10_000 }
   },
   additionalProperties: false
 } as const;
+
+export const pokemonNameParamsSchema = {
+  type: "object",
+  required: ["name"],
+  properties: {
+    name: {
+      type: "string",
+      minLength: 1,
+      maxLength: 64,
+      pattern: "^[A-Za-z0-9][A-Za-z0-9-]*$"
+    }
+  },
+  additionalProperties: false
+} as const;
+
+export const pokemonIdOrNameParamsSchema = {
+  type: "object",
+  required: ["idOrName"],
+  properties: {
+    idOrName: {
+      type: "string",
+      minLength: 1,
+      maxLength: 64,
+      pattern: "^[A-Za-z0-9][A-Za-z0-9-]*$"
+    }
+  },
+  additionalProperties: false
+} as const;
+
+export const pokemonEncountersParamsSchema = {
+  type: "object",
+  required: ["name"],
+  properties: {
+    name: {
+      type: "string",
+      minLength: 1,
+      maxLength: 64,
+      pattern: "^[A-Za-z0-9][A-Za-z0-9-]*$"
+    }
+  },
+  additionalProperties: false
+} as const;
+
+export const pokeApiPassthroughResources = [
+  "ability",
+  "berry",
+  "berry-firmness",
+  "berry-flavor",
+  "characteristic",
+  "contest-effect",
+  "contest-type",
+  "egg-group",
+  "encounter-condition",
+  "encounter-condition-value",
+  "encounter-method",
+  "evolution-chain",
+  "evolution-trigger",
+  "gender",
+  "generation",
+  "growth-rate",
+  "item",
+  "item-attribute",
+  "item-category",
+  "item-fling-effect",
+  "item-pocket",
+  "language",
+  "location",
+  "location-area",
+  "machine",
+  "meta",
+  "move",
+  "move-ailment",
+  "move-battle-style",
+  "move-category",
+  "move-damage-class",
+  "move-learn-method",
+  "move-target",
+  "nature",
+  "pal-park-area",
+  "pokeathlon-stat",
+  "pokedex",
+  "pokemon",
+  "pokemon-color",
+  "pokemon-form",
+  "pokemon-habitat",
+  "pokemon-shape",
+  "pokemon-species",
+  "region",
+  "stat",
+  "super-contest-effect",
+  "type",
+  "version",
+  "version-group"
+] as const;
+
+export type PokeApiPassthroughResource = (typeof pokeApiPassthroughResources)[number];
 
 export const realEstateBookingBodySchema = {
   type: "object",
@@ -184,6 +282,50 @@ export const ecommerceCheckoutBodySchema = {
   },
   additionalProperties: false
 } as const;
+
+const pokemonPassthroughEndpointContracts: ApiEndpointContract[] = [
+  ...pokeApiPassthroughResources.flatMap((resource): ApiEndpointContract[] => {
+    if (resource === "meta") {
+      return [
+        {
+          id: "pokemon.meta.detail",
+          verticalSlug: "pokemon",
+          method: "GET",
+          path: "/v1/pokemon/meta",
+          authRequired: true
+        }
+      ];
+    }
+
+    const detailParamName = resource === "pokemon" ? "name" : "idOrName";
+    return [
+      {
+        id: `pokemon.${resource}.list`,
+        verticalSlug: "pokemon",
+        method: "GET",
+        path: `/v1/pokemon/${resource}`,
+        authRequired: true,
+        querySchema: pokemonListQuerySchema
+      },
+      {
+        id: `pokemon.${resource}.detail`,
+        verticalSlug: "pokemon",
+        method: "GET",
+        path: `/v1/pokemon/${resource}/:${detailParamName}`,
+        authRequired: true,
+        paramsSchema: resource === "pokemon" ? pokemonNameParamsSchema : pokemonIdOrNameParamsSchema
+      }
+    ];
+  }),
+  {
+    id: "pokemon.pokemon.encounters.list",
+    verticalSlug: "pokemon",
+    method: "GET",
+    path: "/v1/pokemon/pokemon/:name/encounters",
+    authRequired: true,
+    paramsSchema: pokemonEncountersParamsSchema
+  }
+];
 
 export const endpointContracts = [
   {
@@ -307,21 +449,7 @@ export const endpointContracts = [
     authRequired: true,
     bodySchema: stayReservationBodySchema
   },
-  {
-    id: "pokemon.pokemon.list",
-    verticalSlug: "pokemon",
-    method: "GET",
-    path: "/v1/pokemon/pokemon",
-    authRequired: true,
-    querySchema: pokemonListQuerySchema
-  },
-  {
-    id: "pokemon.pokemon.detail",
-    verticalSlug: "pokemon",
-    method: "GET",
-    path: "/v1/pokemon/pokemon/:name",
-    authRequired: true
-  },
+  ...pokemonPassthroughEndpointContracts,
   {
     id: "ecommerce.categories.list",
     verticalSlug: "ecommerce",

@@ -15,6 +15,7 @@ import {
 import type { ReactNode } from "react";
 import { logoutAction } from "@/app/dashboard/actions";
 import { Button } from "@/components/ui/button";
+import type { AdminSummary } from "@/lib/admin-api";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,6 +34,7 @@ import {
   SheetTrigger
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import { DashboardCommandMenu } from "./dashboard-command-menu";
 import { ThemeToggle } from "./theme-toggle";
 
 type NavCounts = {
@@ -57,7 +59,15 @@ const navItems: Array<{
   { href: "/dashboard/usage", label: "Usage", icon: <Activity className="h-4 w-4" />, countKey: "usage" }
 ];
 
-export function DashboardNav({ username, counts }: { username: string; counts: NavCounts }) {
+export function DashboardNav({
+  username,
+  counts,
+  summary
+}: {
+  username: string;
+  counts: NavCounts;
+  summary?: AdminSummary | undefined;
+}) {
   const pathname = usePathname();
 
   return (
@@ -98,7 +108,8 @@ export function DashboardNav({ username, counts }: { username: string; counts: N
         })}
       </nav>
 
-      <div className="border-t p-4">
+      <div className="space-y-2 border-t p-4">
+        <DashboardCommandMenu summary={summary} className="w-full justify-start" />
         <div className="flex gap-2">
           <ThemeToggle />
           <DropdownMenu>

@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { getConfiguredSiteUrl } from "@/lib/site-url";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -16,8 +17,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "API STORE | DRIO",
-  description: "DRIO admin dashboard for API STORE.",
+  metadataBase: new URL(getConfiguredSiteUrl()),
+  title: {
+    default: "API Store | Dummy APIs for UI Prototypes",
+    template: "%s | API Store"
+  },
+  description: "Production-grade dummy APIs for frontend mockups, AI-generated prototypes, and vertical UI journeys.",
   icons: {
     icon: [
       { url: "/logos/favicon.svg", type: "image/svg+xml" },

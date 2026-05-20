@@ -39,7 +39,7 @@ export function PageHeader({
             ))}
           </nav>
         ) : null}
-        <h2 className={cn("break-words text-xl font-semibold md:text-2xl", titleClassName)}>{title}</h2>
+        <h1 className={cn("break-words text-xl font-semibold md:text-2xl", titleClassName)}>{title}</h1>
         {description ? <p className="mt-1 max-w-3xl text-sm text-muted-foreground">{description}</p> : null}
       </div>
       {actions ? <div className="flex shrink-0 flex-wrap items-center gap-2 md:justify-end">{actions}</div> : null}
@@ -59,7 +59,7 @@ export function SectionHeader({
   return (
     <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div className="min-w-0 flex-1">
-        <h3 className="text-base font-semibold">{title}</h3>
+        <h2 className="text-base font-semibold">{title}</h2>
         {description ? <p className="mt-1 text-sm text-muted-foreground">{description}</p> : null}
       </div>
       {actions ? <div className="flex shrink-0 flex-wrap items-center gap-2 sm:justify-end">{actions}</div> : null}

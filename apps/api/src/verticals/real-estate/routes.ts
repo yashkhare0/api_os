@@ -1,12 +1,11 @@
 import type { FastifyInstance } from "fastify";
 import { realEstateBookingBodySchema, realEstatePropertiesQuerySchema } from "@dummy-api/contracts";
+import type { PropertyListing } from "@dummy-api/catalog";
 import type { AuthenticatedRequest } from "../../types";
-import { assetUrl } from "../../lib/assets";
 import { parseIsoDate } from "../../lib/date";
 import { badRequest, notFound } from "../../lib/http-error";
 import { asNumber, asString, clampLimit } from "../../lib/query";
 import type { VerticalContext } from "../../lib/vertical";
-import { propertyListings, type PropertyListing } from "./data";
 
 export async function registerRealEstateRoutes(app: FastifyInstance, context: VerticalContext): Promise<void> {
   app.get("/v1/real-estate/properties", { schema: { querystring: realEstatePropertiesQuerySchema } }, async (request) => {
@@ -23,6 +22,7 @@ export async function registerRealEstateRoutes(app: FastifyInstance, context: Ve
       throw badRequest("minPrice cannot exceed maxPrice.");
     }
 
+    const propertyListings = await context.store.listRealEstateProperties();
     const filtered = propertyListings
       .filter((listing) => !city || listing.city.toLowerCase() === city)
       .filter((listing) => !propertyType || listing.propertyType === propertyType)
@@ -31,20 +31,20 @@ export async function registerRealEstateRoutes(app: FastifyInstance, context: Ve
       .filter((listing) => minBedrooms === undefined || listing.bedrooms >= minBedrooms)
       .filter((listing) => minBathrooms === undefined || listing.bathrooms >= minBathrooms)
       .slice(0, limit)
-      .map((listing) => serializeProperty(listing, context));
+      .map(serializeProperty);
 
     return { data: filtered, meta: { count: filtered.length } };
   });
 
   app.get("/v1/real-estate/properties/:id", async (request) => {
     const { id } = request.params as { id: string };
-    const listing = propertyListings.find((item) => item.id === id);
+    const listing = await context.store.getRealEstateProperty(id);
 
     if (!listing) {
       throw notFound("Property listing");
     }
 
-    return { data: serializeProperty(listing, context) };
+    return { data: serializeProperty(listing) };
   });
 
   app.post("/v1/real-estate/bookings", { schema: { body: realEstateBookingBodySchema } }, async (request) => {
@@ -55,7 +55,7 @@ export async function registerRealEstateRoutes(app: FastifyInstance, context: Ve
       endDate: string;
       guestName?: string;
     };
-    const property = propertyListings.find((item) => item.id === body.propertyId);
+    const property = await context.store.getRealEstateProperty(body.propertyId);
 
     if (!property) {
       throw badRequest("propertyId does not match an available property.");
@@ -81,10 +81,6 @@ export async function registerRealEstateRoutes(app: FastifyInstance, context: Ve
   });
 }
 
-function serializeProperty(listing: PropertyListing, context: VerticalContext) {
-  return {
-    ...listing,
-    heroImage: assetUrl(context.config, listing.heroImage),
-    gallery: listing.gallery.map((image) => assetUrl(context.config, image))
-  };
+function serializeProperty(listing: PropertyListing) {
+  return listing;
 }

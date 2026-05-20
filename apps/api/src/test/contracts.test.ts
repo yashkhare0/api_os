@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { endpointContracts, endpointSignature } from "@dummy-api/contracts";
+import { endpointContracts, endpointSignature, pokeApiPassthroughResources } from "@dummy-api/contracts";
 import { verticals } from "@dummy-api/catalog";
 import { buildApp } from "../app";
 import type { ApiConfig } from "../lib/config";
@@ -22,6 +22,17 @@ describe("API contracts", () => {
     expect(endpointContracts).not.toHaveLength(0);
     expect(endpointContracts.every((contract) => contract.path.startsWith("/v1/"))).toBe(true);
     expect(endpointContracts.every((contract) => contract.authRequired)).toBe(true);
+  });
+
+  it("exposes the PokeAPI passthrough allowlist as first-class contracts", () => {
+    const pokemonContracts = endpointContracts.filter((contract) => contract.verticalSlug === "pokemon");
+    const paginatedResources = pokeApiPassthroughResources.filter((resource) => resource !== "meta");
+
+    expect(pokemonContracts).toHaveLength(paginatedResources.length * 2 + 2);
+    expect(pokemonContracts.map(endpointSignature)).toContain("GET /v1/pokemon/ability");
+    expect(pokemonContracts.map(endpointSignature)).toContain("GET /v1/pokemon/ability/:idOrName");
+    expect(pokemonContracts.map(endpointSignature)).toContain("GET /v1/pokemon/pokemon/:name/encounters");
+    expect(pokemonContracts.map(endpointSignature)).toContain("GET /v1/pokemon/meta");
   });
 
   it("registers every contracted route in Fastify", async () => {

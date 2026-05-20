@@ -6,12 +6,11 @@ import {
   carFinancingPrequalificationBodySchema,
   carListingsQuerySchema
 } from "@dummy-api/contracts";
+import type { CarDealer, CarListing } from "@dummy-api/catalog";
 import type { AuthenticatedRequest } from "../../types";
-import { assetUrl } from "../../lib/assets";
 import { badRequest, notFound } from "../../lib/http-error";
 import { asNumber, asString, clampLimit } from "../../lib/query";
 import type { VerticalContext } from "../../lib/vertical";
-import { carDealers, carListings, type CarDealer, type CarListing } from "./data";
 
 export async function registerCarRoutes(app: FastifyInstance, context: VerticalContext): Promise<void> {
   app.get("/v1/cars/listings", { schema: { querystring: carListingsQuerySchema } }, async (request) => {
@@ -26,6 +25,10 @@ export async function registerCarRoutes(app: FastifyInstance, context: VerticalC
     const maxPrice = asNumber(query.maxPrice);
     const maxMileage = asNumber(query.maxMileage);
     const limit = clampLimit(query.limit);
+    const [carListings, carDealers] = await Promise.all([
+      context.store.listCarListings(),
+      context.store.listCarDealers()
+    ]);
 
     const filtered = carListings
       .filter((listing) => !make || listing.make.toLowerCase() === make)
@@ -38,20 +41,21 @@ export async function registerCarRoutes(app: FastifyInstance, context: VerticalC
       .filter((listing) => maxPrice === undefined || listing.price <= maxPrice)
       .filter((listing) => maxMileage === undefined || listing.mileage <= maxMileage)
       .slice(0, limit)
-      .map((listing) => serializeCarListing(listing, context));
+      .map((listing) => serializeCarListing(listing, carDealers.find((dealer) => dealer.id === listing.dealerId)));
 
     return { data: filtered, meta: { count: filtered.length } };
   });
 
   app.get("/v1/cars/listings/:id", async (request) => {
     const { id } = request.params as { id: string };
-    const listing = carListings.find((item) => item.id === id);
+    const listing = await context.store.getCarListing(id);
 
     if (!listing) {
       throw notFound("Car listing");
     }
 
-    return { data: serializeCarListing(listing, context) };
+    const dealer = await context.store.getCarDealer(listing.dealerId);
+    return { data: serializeCarListing(listing, dealer) };
   });
 
   app.get("/v1/cars/dealers", { schema: { querystring: carDealersQuerySchema } }, async (request) => {
@@ -59,6 +63,7 @@ export async function registerCarRoutes(app: FastifyInstance, context: VerticalC
     const city = asString(query.city)?.toLowerCase();
     const state = asString(query.state)?.toLowerCase();
     const limit = clampLimit(query.limit);
+    const carDealers = await context.store.listCarDealers();
 
     const filtered = carDealers
       .filter((dealer) => !city || dealer.city.toLowerCase() === city)
@@ -71,7 +76,10 @@ export async function registerCarRoutes(app: FastifyInstance, context: VerticalC
 
   app.get("/v1/cars/dealers/:id", async (request) => {
     const { id } = request.params as { id: string };
-    const dealer = carDealers.find((item) => item.id === id);
+    const [dealer, carListings] = await Promise.all([
+      context.store.getCarDealer(id),
+      context.store.listCarListings()
+    ]);
 
     if (!dealer) {
       throw notFound("Car dealer");
@@ -107,7 +115,7 @@ export async function registerCarRoutes(app: FastifyInstance, context: VerticalC
     const authRequest = request as AuthenticatedRequest;
     const { cartId } = request.params as { cartId: string };
     const body = request.body as { listingId: string; quantity?: number };
-    const listing = carListings.find((item) => item.id === body.listingId);
+    const listing = await context.store.getCarListing(body.listingId);
 
     if (!listing) {
       throw badRequest("listingId does not match an available car listing.");
@@ -150,7 +158,7 @@ export async function registerCarRoutes(app: FastifyInstance, context: VerticalC
         creditRating: "excellent" | "good" | "fair" | "building";
         termMonths: 36 | 48 | 60 | 72 | 84;
       };
-      const listing = carListings.find((item) => item.id === body.listingId);
+      const listing = await context.store.getCarListing(body.listingId);
 
       if (!listing) {
         throw badRequest("listingId does not match an available car listing.");
@@ -201,14 +209,10 @@ export async function registerCarRoutes(app: FastifyInstance, context: VerticalC
   });
 }
 
-function serializeCarListing(listing: CarListing, context: VerticalContext) {
-  const dealer = carDealers.find((item) => item.id === listing.dealerId);
-
+function serializeCarListing(listing: CarListing, dealer?: CarDealer | null) {
   return {
     ...listing,
-    ...(dealer ? { dealer: serializeDealer(dealer) } : {}),
-    heroImage: assetUrl(context.config, listing.heroImage),
-    gallery: listing.gallery.map((image) => assetUrl(context.config, image))
+    ...(dealer ? { dealer: serializeDealer(dealer) } : {})
   };
 }
 

@@ -1,7 +1,10 @@
 import "server-only";
+import { existsSync } from "node:fs";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import type { ApiKeyStatus, UsageSummary } from "@dummy-api/core";
 import { endpointContracts } from "@dummy-api/contracts";
-import { verticals } from "@dummy-api/catalog";
+import { catalogSeed, mediaAssetSeeds, verticals, type MediaAssetSeed } from "@dummy-api/catalog";
 
 export type AdminApiKey = {
   id: string;
@@ -68,7 +71,13 @@ export type ApiResponse = {
 };
 
 export async function syncRegistry(): Promise<void> {
-  await convexRequest<{ data: { apps: number; endpoints: number } }>("/admin/registry/sync", {
+  const response = await convexRequest<{
+    data: {
+      apps: number;
+      endpoints: number;
+      missingMediaKeys?: string[];
+    };
+  }>("/admin/registry/sync", {
     method: "POST",
     body: JSON.stringify({
       apps: verticals.map((vertical) => ({
@@ -83,9 +92,18 @@ export async function syncRegistry(): Promise<void> {
         appSlug: contract.verticalSlug,
         method: contract.method,
         path: contract.path
-      }))
+      })),
+      mediaAssets: mediaAssetSeeds,
+      catalog: catalogSeed
     })
   });
+
+  for (const assetKey of response.data.missingMediaKeys ?? []) {
+    const asset = mediaAssetSeeds.find((item) => item.assetKey === assetKey);
+    if (asset) {
+      await uploadMediaAsset(asset);
+    }
+  }
 }
 
 export async function getAdminSummary(): Promise<AdminSummary> {
@@ -181,4 +199,32 @@ async function convexRequest<T>(path: string, init: RequestInit): Promise<T> {
   }
 
   return payload as T;
+}
+
+async function uploadMediaAsset(asset: MediaAssetSeed): Promise<void> {
+  const file = await readFile(resolveAssetPath(asset.assetKey));
+
+  await convexRequest("/admin/media/upload", {
+    method: "POST",
+    body: JSON.stringify({
+      assetKey: asset.assetKey,
+      contentType: asset.contentType,
+      contentBase64: file.toString("base64")
+    })
+  });
+}
+
+function resolveAssetPath(assetKey: string): string {
+  const relativePath = assetKey.replace(/^\/+/, "");
+  const candidates = [
+    path.resolve(process.cwd(), "apps/api/public", relativePath),
+    path.resolve(process.cwd(), "../api/public", relativePath)
+  ];
+  const match = candidates.find((candidate) => existsSync(candidate));
+
+  if (!match) {
+    throw new Error(`Media asset file was not found for ${assetKey}.`);
+  }
+
+  return match;
 }

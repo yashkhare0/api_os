@@ -100,6 +100,83 @@ export default defineSchema({
     status: v.literal("confirmed"),
     createdAt: v.number()
   }).index("by_owner", ["verticalSlug", "apiKeyId"]),
+  mediaAssets: defineTable({
+    verticalSlug: v.string(),
+    assetKey: v.string(),
+    fileName: v.string(),
+    contentType: v.string(),
+    byteLength: v.optional(v.number()),
+    storageId: v.optional(v.id("_storage")),
+    createdAt: v.number(),
+    updatedAt: v.number()
+  })
+    .index("by_asset_key", ["assetKey"])
+    .index("by_vertical", ["verticalSlug"]),
+  carDealers: defineTable({
+    externalId: v.string(),
+    city: v.string(),
+    state: v.string(),
+    payload: v.any(),
+    createdAt: v.number(),
+    updatedAt: v.number()
+  }).index("by_external_id", ["externalId"]),
+  carListings: defineTable({
+    externalId: v.string(),
+    dealerId: v.string(),
+    make: v.string(),
+    model: v.string(),
+    city: v.string(),
+    bodyStyle: v.string(),
+    fuelType: v.string(),
+    condition: v.string(),
+    price: v.number(),
+    mileage: v.number(),
+    payload: v.any(),
+    createdAt: v.number(),
+    updatedAt: v.number()
+  })
+    .index("by_external_id", ["externalId"])
+    .index("by_dealer", ["dealerId"]),
+  ecommerceCategories: defineTable({
+    externalId: v.string(),
+    slug: v.string(),
+    payload: v.any(),
+    createdAt: v.number(),
+    updatedAt: v.number()
+  })
+    .index("by_external_id", ["externalId"])
+    .index("by_slug", ["slug"]),
+  ecommerceProducts: defineTable({
+    externalId: v.string(),
+    categoryId: v.string(),
+    price: v.number(),
+    stock: v.number(),
+    payload: v.any(),
+    createdAt: v.number(),
+    updatedAt: v.number()
+  })
+    .index("by_external_id", ["externalId"])
+    .index("by_category", ["categoryId"]),
+  realEstateProperties: defineTable({
+    externalId: v.string(),
+    city: v.string(),
+    propertyType: v.string(),
+    price: v.number(),
+    bedrooms: v.number(),
+    bathrooms: v.number(),
+    payload: v.any(),
+    createdAt: v.number(),
+    updatedAt: v.number()
+  }).index("by_external_id", ["externalId"]),
+  stayListings: defineTable({
+    externalId: v.string(),
+    city: v.string(),
+    maxGuests: v.number(),
+    nightlyRate: v.number(),
+    payload: v.any(),
+    createdAt: v.number(),
+    updatedAt: v.number()
+  }).index("by_external_id", ["externalId"]),
   apiApps: defineTable({
     slug: v.string(),
     name: v.string(),

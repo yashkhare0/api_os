@@ -6,7 +6,7 @@ import { DataTable } from "@/components/dashboard/data-table";
 import { EndpointCell } from "@/components/dashboard/endpoint-cell";
 import { endpointHref } from "@/components/dashboard/format";
 import { MetricCard } from "@/components/dashboard/metric-card";
-import { SectionHeader } from "@/components/dashboard/page-header";
+import { PageHeader, SectionHeader } from "@/components/dashboard/page-header";
 import { StatusBadge } from "@/components/dashboard/status-badge";
 import { getDashboardSummaryResult } from "./data";
 
@@ -28,6 +28,8 @@ export default async function DashboardPage() {
 
   return (
     <>
+      <PageHeader title="Overview" description="Registry health, active access, and recent API activity." />
+
       <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         <MetricCard title="Live apps" value={`${liveApps}/${summary.registry.apps.length}`} icon={<Server className="h-4 w-4" />} />
         <MetricCard title="Live APIs" value={`${liveEndpoints}/${summary.registry.endpoints.length}`} icon={<Layers3 className="h-4 w-4" />} />
