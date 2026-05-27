@@ -24,8 +24,10 @@ if (!existsSync(source)) {
   process.exit(1);
 }
 
-rmSync(destination, { recursive: true, force: true });
-cpSync(source, destination, { recursive: true });
+if (source !== destination) {
+  rmSync(destination, { recursive: true, force: true });
+  cpSync(source, destination, { recursive: true });
+}
 
 const routesManifest = join(destination, "routes-manifest.json");
 
@@ -34,4 +36,4 @@ if (!existsSync(routesManifest)) {
   process.exit(1);
 }
 
-console.log(`Synced Next.js output from ${source} to ${destination}`);
+console.log(source === destination ? `Next.js output already at ${destination}` : `Synced Next.js output from ${source} to ${destination}`);
