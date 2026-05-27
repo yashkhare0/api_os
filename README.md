@@ -123,7 +123,7 @@ Use these Vercel project settings:
 - Build Command: leave empty to use root `vercel.json`
 - Output Directory: leave empty to use root `vercel.json` (`.next` after sync)
 
-Root `vercel.json` builds `@dummy-api/dashboard`, then copies `apps/dashboard/.next` into the Vercel project root as `.next`. That avoids failures when the dashboard app lives in a subdirectory.
+Root `vercel.json` runs `scripts/vercel-build.mjs`, which builds `@dummy-api/dashboard` and copies `apps/dashboard/.next` into `.next` at the Vercel project root.
 
 Do not set Root Directory to `apps/api`. If it is set to `apps/api`, Vercel looks for output at paths like `apps/api/apps/dashboard/.next` when Output Directory is overridden to `apps/dashboard/.next`.
 
