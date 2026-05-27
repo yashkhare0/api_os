@@ -115,13 +115,23 @@ pnpm build
 
 Deploy the repository root as one Vercel project. Do not create separate Vercel projects for `apps/api` and `apps/dashboard`; the root `vercel.json` builds `@dummy-api/dashboard`, which embeds the Fastify API module so `/dashboard/*`, `/v1/*`, `/assets/*`, and `/health/*` are served from one origin.
 
-Use these Vercel project settings:
+Use one of these Vercel project setups:
+
+**Option A (recommended): Root Directory `apps/dashboard`**
+
+- Root Directory: `apps/dashboard`
+- Framework Preset: Next.js
+- Install / build commands come from `apps/dashboard/vercel.json`
+
+**Option B: Root Directory `.` (repository root)**
 
 - Root Directory: `.`
 - Framework Preset: Next.js
 - Install Command: `pnpm install --frozen-lockfile`
 - Build Command: `pnpm --filter @dummy-api/dashboard build`
 - Output Directory: `apps/dashboard/.next`
+
+Do not set Root Directory to `apps/api`. That package is the embedded Fastify API module, not the deployable Next.js app. If Root Directory is wrong, Vercel looks for output at paths like `apps/api/apps/dashboard/.next` and the deploy fails after a successful build.
 
 The project needs:
 
